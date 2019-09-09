@@ -1,0 +1,20 @@
+#Ignore the default hidden folder of Visual Studio.
+.vs/
+
+#Ignore any visual studio folders.
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+
+#Ignore Nuget packages folder.
+[Pp]ackages/
+
+#Ignore private folders for the server.
+[Pp]riv/
+
+#Ignore the FiveM FXserver cache.
+[Cc]ache/
+
+#Ignore the server artifacts, new cloners should add this themselves.
+[Aa]rtifacts/
