@@ -93,32 +93,32 @@ namespace FYF.MapBuilder.Client
             }
         }
 
-        private void OnFreecamForward(float heldTime)
+        private void OnFreecamForward(int heldTime)
         {
             movementVector += camera.UpVector;
         }
 
-        private void OnFreecamBackwards(float heldTime)
+        private void OnFreecamBackwards(int heldTime)
         {
             movementVector -= camera.UpVector;
         }
 
-        private void OnFreecamRight(float heldTime)
+        private void OnFreecamRight(int heldTime)
         {
             movementVector += camera.RightVector;
         }
 
-        private void OnFreecamLeft(float heldTime)
+        private void OnFreecamLeft(int heldTime)
         {
             movementVector -= camera.RightVector;
         }
 
-        private void OnFreecamUp(float heldTime)
+        private void OnFreecamUp(int heldTime)
         {
             movementVector += camera.ForwardVector;
         }
 
-        private void OnFreecamDown(float heldTime)
+        private void OnFreecamDown(int heldTime)
         {
             movementVector -= camera.ForwardVector;
         }

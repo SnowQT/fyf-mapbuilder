@@ -1,5 +1,6 @@
 ﻿using CitizenFX.Core;
 using System.Collections.Generic;
+using System.Linq;
 using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
@@ -13,66 +14,101 @@ namespace FYF.MapBuilder.Client
 
         Up = 44,
         Down = 46,
-
-        Mouse = 0
     }
 
-    internal delegate void FreecamKeyInput(float time);
-    internal delegate void FreecamMouseInput(Vector2 deltaPosition);
+    internal delegate void InputKeyCallback(int msec);
+    internal delegate void InputMouseCallback(Vector2 deltaPosition);
+
+    internal class FreecamInputEntry
+    {
+        public FreecamKeys Key;
+        public bool CurrentState;
+        public int CurrentTime;
+        public HashSet<InputKeyCallback> Callbacks;
+
+        public FreecamInputEntry(FreecamKeys key, params InputKeyCallback[] callbacks)
+        {
+            Key = key;
+            Callbacks = new HashSet<InputKeyCallback>(callbacks);
+
+            CurrentState = false;
+            CurrentTime = 0;
+        }
+
+        public void Update(bool state)
+        {
+            //If the states are NOT synced, reset.
+            if ((state ^ CurrentState))
+            {
+                CurrentTime = GetGameTimer();
+                CurrentState = state;
+            }
+        }
+
+        public void Invoke()
+        {
+            if (Callbacks.Count == 0)
+            {
+                return;
+            }
+
+            int heldTime = GetGameTimer() - CurrentTime;
+
+            foreach (InputKeyCallback cb in Callbacks)
+            {
+                cb.Invoke(heldTime);
+            }
+        }
+    }
+
 
     //@TODO: Right now we always assume the input group is 0.
     //       Which for some scenarios might not be ideal, but ideal for our intents and purposes.
     internal sealed class FreecamInput
     {
-        private struct FreecamKeyInputCallback_t
+        private Dictionary<FreecamKeys, FreecamInputEntry> inputEntries = 
+            new Dictionary<FreecamKeys, FreecamInputEntry>();
+
+        private InputMouseCallback mouseCallback;
+
+        public void BindKey(FreecamKeys key, InputKeyCallback callback)
         {
-            public FreecamKeys Key;
-            public FreecamKeyInput Callback;
+            bool found = inputEntries.TryGetValue(key, out FreecamInputEntry entry);
 
-            public FreecamKeyInputCallback_t(FreecamKeys key, FreecamKeyInput callback )
+            if (found)
             {
-                Key = key;
-                Callback = callback;
+                entry.Callbacks.Add(callback);
             }
-
-            public void Invoke(float time)
+            else
             {
-                if (Callback == null)
-                {
-                    return;
-                }
-
-                Callback.Invoke(time);
+                inputEntries[key] = new FreecamInputEntry(key, callback);
             }
         }
 
-        private HashSet<FreecamKeyInputCallback_t> keyCallbacks =
-            new HashSet<FreecamKeyInputCallback_t>();
-
-        private FreecamMouseInput mouseCallback;
-
-        public void BindKey(FreecamKeys key, FreecamKeyInput callback)
-        {
-            keyCallbacks.Add(new FreecamKeyInputCallback_t(key, callback));
-        }
-
-        public void BindMouse(FreecamMouseInput callback)
+        public void BindMouse(InputMouseCallback callback)
         {
             mouseCallback = callback;
         }
 
         public void PollKeys()
         {
-            //@TODO @PERF: De-duplicate the keys, right now we potentially could poll the same key
-            //             multiple times. Our data structure could deduplicate this.
-            foreach (var keyCallback in keyCallbacks)
+            foreach (var keyCallback in inputEntries)
             {
-                int key = (int)keyCallback.Key;
+                bool found = inputEntries.TryGetValue(keyCallback.Key, out FreecamInputEntry entry);
 
-                if (IsControlPressed(0, key))
+                if (!found)
                 {
-                    //@TODO: Keep track of key held time.
-                    keyCallback.Invoke(0.0f);
+                    continue;
+                }
+
+                int key = (int)keyCallback.Key;
+                bool state = IsControlPressed(0, key);
+
+                entry.Update(state);
+
+                if (state)
+                {
+                    entry.Invoke();
                 }
             }
         }
