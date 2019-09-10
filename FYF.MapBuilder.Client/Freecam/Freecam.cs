@@ -46,6 +46,9 @@ namespace FYF.MapBuilder.Client
                 return;
             }
 
+            Vector3 position = camera.Position;
+            SetFocusArea(position.X, position.Y, position.Z, 0.0f, 0.0f, 0.0f);
+
             await Task.FromResult(0);
         }
 
@@ -54,13 +57,18 @@ namespace FYF.MapBuilder.Client
             int playerId = PlayerId();
             int playerPedId = PlayerPedId();
 
-            ClearFocus();
+            Ped playerPed = new Ped(playerPedId);
+            playerPed.Position = playerPed.Position + Vector3.Up;
 
+            //Freeze the player ped entity.
             SetEntityVisible(playerPedId, false, false);
             SetEntityCollision(playerPedId, false, false);
+            FreezeEntityPosition(playerPedId, true);
             SetPlayerInvincible(playerPedId, true);
 
-            SetPlayerControl(playerId, true, 0);
+            //NOTE: This will cause _all_ input to be killed.
+            //      So that is why we are not using this.
+            //SetPlayerControl(playerId, false, 0);
         }
 
         private void EnablePlayer()
@@ -68,13 +76,18 @@ namespace FYF.MapBuilder.Client
             int playerId = PlayerId();
             int playerPedId = PlayerPedId();
 
+            //Reset area focus to the player.
             ClearFocus();
 
+            //Unfreeze the player ped entity.
             SetEntityVisible(playerPedId, true, false);
             SetEntityCollision(playerPedId, true, false);
             SetPlayerInvincible(playerPedId, false);
+            FreezeEntityPosition(playerPedId, false);
 
-            SetPlayerControl(playerId, false, 0);
+            //NOTE: This will cause _all_ input to be killed.
+            //      So that is why we are not using this.
+            //SetPlayerControl(playerId, true, 0);
         }
 
         //@TODO: This should allow for a config to be passed in.
@@ -109,6 +122,8 @@ namespace FYF.MapBuilder.Client
             {
                 camera.Delete();
             }
+
+            RenderScriptCams(false, false, 0, false, false);
         }
 
         private void MoveCamera(Vector3 position)
