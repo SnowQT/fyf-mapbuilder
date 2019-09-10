@@ -94,15 +94,8 @@ namespace FYF.MapBuilder.Client
         {
             foreach (var keyCallback in inputEntries)
             {
-                bool found = inputEntries.TryGetValue(keyCallback.Key, out FreecamInputEntry entry);
-
-                if (!found)
-                {
-                    continue;
-                }
-
-                int key = (int)keyCallback.Key;
-                bool state = IsControlPressed(0, key);
+                FreecamInputEntry entry = keyCallback.Value;
+                bool state = IsControlPressed(0, (int)keyCallback.Key);
 
                 entry.Update(state);
 
