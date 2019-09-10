@@ -16,19 +16,22 @@ namespace FYF.MapBuilder.Client
         Down = 46,
     }
 
-    internal delegate void InputKeyCallback(int msec);
+    internal delegate void InputKeyCallback(float reach);
     internal delegate void InputMouseCallback(Vector2 deltaPosition);
 
-    internal class FreecamInputEntry
+    internal sealed class FreecamInputEntry
     {
         public FreecamKeys Key;
-        public bool CurrentState;
-        public int CurrentTime;
+        public int MaxReach;
         public HashSet<InputKeyCallback> Callbacks;
 
-        public FreecamInputEntry(FreecamKeys key, params InputKeyCallback[] callbacks)
+        private bool CurrentState;
+        private int CurrentTime;
+
+        public FreecamInputEntry(FreecamKeys key, int maxReach, params InputKeyCallback[] callbacks)
         {
             Key = key;
+            MaxReach = maxReach;
             Callbacks = new HashSet<InputKeyCallback>(callbacks);
 
             CurrentState = false;
@@ -37,7 +40,7 @@ namespace FYF.MapBuilder.Client
 
         public void Update(bool state)
         {
-            //If the states are NOT synced, reset.
+            //if A != B...
             if ((state ^ CurrentState))
             {
                 CurrentTime = GetGameTimer();
@@ -53,10 +56,11 @@ namespace FYF.MapBuilder.Client
             }
 
             int heldTime = GetGameTimer() - CurrentTime;
+            float reach = MathUtil.Clamp((float)heldTime / (float)MaxReach, 0.01f, 1.0f);
 
             foreach (InputKeyCallback cb in Callbacks)
             {
-                cb.Invoke(heldTime);
+                cb.Invoke(reach);
             }
         }
     }
@@ -71,7 +75,7 @@ namespace FYF.MapBuilder.Client
 
         private InputMouseCallback mouseCallback;
 
-        public void BindKey(FreecamKeys key, InputKeyCallback callback)
+        public void BindKey(FreecamKeys key, int reach, InputKeyCallback callback)
         {
             bool found = inputEntries.TryGetValue(key, out FreecamInputEntry entry);
 
@@ -81,7 +85,7 @@ namespace FYF.MapBuilder.Client
             }
             else
             {
-                inputEntries[key] = new FreecamInputEntry(key, callback);
+                inputEntries[key] = new FreecamInputEntry(key, reach, callback);
             }
         }
 

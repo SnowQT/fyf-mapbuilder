@@ -9,131 +9,111 @@ namespace FYF.MapBuilder.Client
     {
         public bool Enabled { get; private set; }
         
-        public bool IsCameraValid
-        {
-            get
-            {
-                return Enabled && 
-                    camera != null && 
-                    camera.Exists();
-            }
-
-        }
-
-        private Camera camera;
         private FreecamInput input;
+        private FreecamCamera camera;
 
         private Vector3 movementVector = Vector3.Zero;
         private Vector3 rotationVector = Vector3.Zero;
 
         public Freecam()
         {
+            camera = new FreecamCamera();
+
             input = new FreecamInput();
-
-            input.BindKey(FreecamKeys.Forward, OnFreecamForward);
-            input.BindKey(FreecamKeys.Backwards, OnFreecamBackwards);
-            input.BindKey(FreecamKeys.Left, OnFreecamLeft);
-            input.BindKey(FreecamKeys.Right, OnFreecamRight);
-            input.BindKey(FreecamKeys.Up, OnFreecamDown);
-            input.BindKey(FreecamKeys.Down, OnFreecamUp);
-
+            input.BindKey(FreecamKeys.Forward, 1000, OnFreecamForward);
+            input.BindKey(FreecamKeys.Backwards, 1000, OnFreecamBackwards);
+            input.BindKey(FreecamKeys.Left, 1000, OnFreecamLeft);
+            input.BindKey(FreecamKeys.Right, 1000, OnFreecamRight);
+            input.BindKey(FreecamKeys.Up, 1000, OnFreecamDown);
+            input.BindKey(FreecamKeys.Down, 1000, OnFreecamUp);
             input.BindMouse(OnFreecamMouseMove);
         }
 
         public void EnableFreecam()
         {
-            CreateCamera();
+            camera.Create();
             FreezePlayerPed();
-
             Enabled = true;
         }
 
         public void DisableFreecam()
         {
-            DestroyCamera();
+            camera.Destroy();
             UnfreezePlayerPed();   
-
             Enabled = false;
         }
 
         public async Task Update()
         {
-            if (!IsCameraValid)
-            {
-                await BaseScript.Delay(500);
-                return;
-            }
-
-            UpdateMinimap();
-
-            input.PollKeys();
-            input.PollMouse();
-
-            MoveCameraRelative(movementVector);
-            RotateCameraRelative(rotationVector);
-
-            movementVector = Vector3.Zero;
-            rotationVector = Vector3.Zero;
-
-            await Task.FromResult(0);
-        }
-
-        private void UpdateMinimap()
-        {
+            //Update the minimap.
             if (Enabled)
             {
+                SetFocusArea(camera.Position.X, camera.Position.Y, camera.Position.Z, 0.0f, 0.0f, 0.0f);
                 LockMinimapPosition(camera.Position.X, camera.Position.Y);
                 LockMinimapAngle(-((int)camera.Rotation.Z));
                 SetRadarZoomLevelThisFrame(100.0f);
             }
             else
             {
+                //@TODO: This shouldn't be called every frame,
                 UnlockMinimapPosition();
                 UnlockMinimapAngle();
+                ClearFocus();
+
+                await BaseScript.Delay(500);
+                return;
             }
+
+            input.PollKeys();
+            input.PollMouse();
+
+            camera.Update();
+
+            await Task.FromResult(0);
         }
 
-        private void OnFreecamForward(int heldTime)
+        void OnFreecamForward(float reach)
         {
-            movementVector += camera.UpVector;
+            Vector3 forward = reach * camera.Matrix.Up;
+            camera.SetRelativePosition(forward);
         }
 
-        private void OnFreecamBackwards(int heldTime)
+        void OnFreecamBackwards(float reach)
         {
-            movementVector -= camera.UpVector;
+            Vector3 backwards = reach * camera.Matrix.Down;
+            camera.SetRelativePosition(backwards);
         }
 
-        private void OnFreecamRight(int heldTime)
+        void OnFreecamRight(float reach)
         {
-            movementVector += camera.RightVector;
+            Vector3 right = reach * camera.Matrix.Right;
+            camera.SetRelativePosition(right);
         }
 
-        private void OnFreecamLeft(int heldTime)
+        void OnFreecamLeft(float reach)
         {
-            movementVector -= camera.RightVector;
+            Vector3 left = reach * camera.Matrix.Left;
+            camera.SetRelativePosition(left);
         }
 
-        private void OnFreecamUp(int heldTime)
+        void OnFreecamUp(float reach)
         {
-            movementVector += camera.ForwardVector;
+            Vector3 up = reach * camera.Matrix.Forward;
+            camera.SetRelativePosition(up);
         }
 
-        private void OnFreecamDown(int heldTime)
+        void OnFreecamDown(float reach)
         {
-            movementVector -= camera.ForwardVector;
+            Vector3 down = reach * camera.Matrix.Backward;
+            camera.SetRelativePosition(down);
         }
 
         private void OnFreecamMouseMove(Vector2 rotation)
         {
-            //@TODO: Remove this.
-            const float sensitivity = 2.0f;
-
-            Vector3 newRotation = new Vector3(rotation.X, 0.0f, rotation.Y);
-            newRotation = newRotation * GetFrameTime() * (sensitivity * 500.0f);
-
-            rotationVector += newRotation;
+            camera.SetRelativeRotation(rotation);
         }
 
+        //@TODO: This should be some util function, same for unfreeze player.
         private void FreezePlayerPed()
         {
             int playerId = PlayerId();
@@ -157,9 +137,6 @@ namespace FYF.MapBuilder.Client
             int playerId = PlayerId();
             int playerPedId = PlayerPedId();
 
-            //Reset area focus to the player.
-            ClearFocus();
-
             //Unfreeze the player ped entity.
             SetEntityVisible(playerPedId, true, false);
             SetEntityCollision(playerPedId, true, false);
@@ -167,69 +144,6 @@ namespace FYF.MapBuilder.Client
             FreezeEntityPosition(playerPedId, false);
 
             NetworkSetEntityInvisibleToNetwork(playerPedId, false);
-        }
-
-        //@TODO: This should allow for a config to be passed in.
-        private void CreateCamera()
-        {
-            const float FOV = 90.0f;
-
-            int cameraHandle = CreateCam("DEFAULT_SCRIPTED_CAMERA", true);
-
-            camera = new Camera(cameraHandle);
-
-            if (!camera.Exists())
-            {
-                Debug.WriteLine("MapBuilder - Failed to instantiate a new camera.");
-                return;
-            }
-
-            MoveCamera(new Vector3(0.0f, 0.0f, 500.0f));
-            RotateCamera(new Vector3(0.0f, 0.0f, 0.0f));
-
-            camera.FieldOfView = FOV;
-            camera.IsActive = true;
-
-            RenderScriptCams(true, true, 500, false, false);
-        }
-
-        private void DestroyCamera()
-        {
-            if (IsCameraValid)
-            {
-                camera.Delete();
-            }
-
-            RenderScriptCams(false, false, 0, false, false);
-        }
-
-        private void MoveCamera(Vector3 position)
-        {
-            SetFocusArea(position.X, position.Y, position.Z, 0.0f, 0.0f, 0.0f);
-            camera.Position = position;
-        }
-
-        //Move the camera relative to the current position.
-        private void MoveCameraRelative(Vector3 offset)
-        {
-            Vector3 cameraPosition = camera.Position;
-            cameraPosition += offset;
-            MoveCamera(cameraPosition);
-        }
-
-        private void RotateCamera(Vector3 rotation)
-        {
-            camera.Rotation = rotation;
-        }
-
-        private void RotateCameraRelative(Vector3 rotation)
-        {
-            Vector3 cameraRotation = camera.Rotation;
-            cameraRotation += rotation;
-
-            float clampedX = MathUtil.Clamp(cameraRotation.X, -89.0f, 89.0f);
-            Vector3 clampedRotation = new Vector3(clampedX, 0.0f, cameraRotation.Z);
-            RotateCamera(clampedRotation);
         }
     }
 }
