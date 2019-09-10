@@ -27,11 +27,11 @@ namespace FYF.MapBuilder.Client
 
             if (!freeCam.Enabled)
             {
-                freeCam.Enable();
+                freeCam.EnableFreecam();
             }
             else
             {
-                freeCam.Disable();
+                freeCam.DisableFreecam();
             }     
         }
 
@@ -53,7 +53,7 @@ namespace FYF.MapBuilder.Client
 
             if (freeCam.Enabled)
             {
-                freeCam.Disable();
+                freeCam.DisableFreecam();
             }
         }
     }
