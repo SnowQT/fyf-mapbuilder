@@ -10,7 +10,7 @@ namespace FYF.MapBuilder.Client
         public static void Set(Vector3 position, Vector3 rotation)
         {
             //NOTE: Convert to a signed angle (0-306 degrees).
-            int signedAngle = 180 + (int)rotation.Z; 
+            int signedAngle = 180 + (int)rotation.Z;
 
             LockMinimapPosition(position.X, position.Y);
             LockMinimapAngle(signedAngle);

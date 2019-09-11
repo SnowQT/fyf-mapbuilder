@@ -5,9 +5,22 @@ using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
+    internal struct FreecamConfig
+    {
+        public int FieldOfView;
+
+        public float RotationSensitivity;
+        public float RotationBase;
+        public float PositionSensitivity;
+        public float PositionBase;
+
+        public int KeySmoothTime;
+    }
+
     internal sealed class Freecam
     {
         public bool Enabled { get; private set; }
+        public FreecamConfig Config { get; private set; }
         
         private FreecamInput input;
         private FreecamCamera camera;
@@ -15,17 +28,19 @@ namespace FYF.MapBuilder.Client
         private Vector3 movementVector = Vector3.Zero;
         private Vector3 rotationVector = Vector3.Zero;
 
-        public Freecam()
+        public Freecam(FreecamConfig config)
         {
-            camera = new FreecamCamera();
+            Config = config;
 
-            input = new FreecamInput();
-            input.BindKey(FreecamKeys.Forward, 1000, OnFreecamForward);
-            input.BindKey(FreecamKeys.Backwards, 1000, OnFreecamBackwards);
-            input.BindKey(FreecamKeys.Left, 1000, OnFreecamLeft);
-            input.BindKey(FreecamKeys.Right, 1000, OnFreecamRight);
-            input.BindKey(FreecamKeys.Up, 1000, OnFreecamDown);
-            input.BindKey(FreecamKeys.Down, 1000, OnFreecamUp);
+            camera = new FreecamCamera(this);
+
+            input = new FreecamInput(this);
+            input.BindKey(FreecamKeys.Forward, OnFreecamForward);
+            input.BindKey(FreecamKeys.Backwards, OnFreecamBackwards);
+            input.BindKey(FreecamKeys.Left, OnFreecamLeft);
+            input.BindKey(FreecamKeys.Right, OnFreecamRight);
+            input.BindKey(FreecamKeys.Up, OnFreecamDown);
+            input.BindKey(FreecamKeys.Down, OnFreecamUp);
             input.BindMouse(OnFreecamMouseMove);
         }
 

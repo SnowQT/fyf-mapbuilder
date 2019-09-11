@@ -11,7 +11,17 @@ namespace FYF.MapBuilder.Client
 
         public MapBuilderClient()
         {
-            freeCam = new Freecam();
+            FreecamConfig config = new FreecamConfig
+            {
+                FieldOfView = 75,
+                PositionSensitivity = 1.0f,
+                PositionBase = 100.0f,
+                RotationSensitivity = 2.0f,
+                RotationBase = 500.0f,
+                KeySmoothTime = 500,
+            };
+
+            freeCam = new Freecam(config);
             Tick += freeCam.Update;
 
             EventHandlers.Add("onResourceStop", new Action<string>(OnResourceStopped));

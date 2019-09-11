@@ -70,12 +70,19 @@ namespace FYF.MapBuilder.Client
     //       Which for some scenarios might not be ideal, but ideal for our intents and purposes.
     internal sealed class FreecamInput
     {
+        private Freecam self;
+
         private Dictionary<FreecamKeys, FreecamInputEntry> inputEntries = 
             new Dictionary<FreecamKeys, FreecamInputEntry>();
 
         private InputMouseCallback mouseCallback;
 
-        public void BindKey(FreecamKeys key, int reach, InputKeyCallback callback)
+        public FreecamInput(Freecam self)
+        {
+            this.self = self;
+        }
+
+        public void BindKey(FreecamKeys key, InputKeyCallback callback)
         {
             bool found = inputEntries.TryGetValue(key, out FreecamInputEntry entry);
 
@@ -85,7 +92,7 @@ namespace FYF.MapBuilder.Client
             }
             else
             {
-                inputEntries[key] = new FreecamInputEntry(key, reach, callback);
+                inputEntries[key] = new FreecamInputEntry(key, self.Config.KeySmoothTime, callback);
             }
         }
 

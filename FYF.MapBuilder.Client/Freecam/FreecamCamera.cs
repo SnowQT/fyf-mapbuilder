@@ -53,15 +53,18 @@ namespace FYF.MapBuilder.Client
         }
 
 
+        private Freecam self;
         private Camera cameraReference;
         private Vector3 positionDeltaVector = Vector3.Zero;
         private Vector3 rotationDeltaVector = Vector3.Zero;
 
+        public FreecamCamera(Freecam self)
+        {
+            this.self = self;
+        }
+
         public void Create()
         {
-            //@TODO: Don't hardcode this. Pass in configuration struct or something.
-            const float FOV = 90.0f;
-
             int cameraHandle = CreateCam("DEFAULT_SCRIPTED_CAMERA", true);
             cameraReference = new Camera(cameraHandle);
 
@@ -71,12 +74,12 @@ namespace FYF.MapBuilder.Client
                 return;
             }
 
-            cameraReference.Position = new Vector3(0.0f, 0.0f, 500.0f);
+            cameraReference.Position = new Vector3(0.0f, 0.0f, 200.0f);
             cameraReference.Rotation = new Vector3(0.0f, 0.0f, 0.0f);
-            cameraReference.FieldOfView = FOV;
+            cameraReference.FieldOfView = self.Config.FieldOfView;
             cameraReference.IsActive = true;
 
-            RenderScriptCams(true, true, 500, false, false);
+            RenderScriptCams(true, true, 1000, false, false);
         }
 
         public void Destroy()
@@ -87,7 +90,7 @@ namespace FYF.MapBuilder.Client
                 cameraReference = null;
             }
 
-            RenderScriptCams(false, false, 0, false, false);
+            RenderScriptCams(false, true, 1000, false, false);
         }
 
         public void Update()
@@ -110,14 +113,20 @@ namespace FYF.MapBuilder.Client
 
         public void SetRelativePosition(Vector3 input)
         {
-            positionDeltaVector += ScaleWithTime(input, 2.0f, 500.0f);
+            positionDeltaVector += ScaleWithTime(input,
+                self.Config.PositionSensitivity,
+                self.Config.PositionBase
+            );
         }
 
         public void SetRelativeRotation(Vector2 input)
         {
-            //@TODO: The 2.0f (sensitivity) is hardcoded, allow for a config to be passed int.
             Vector3 scaledRotation = new Vector3(input.X, 0.0f, input.Y);
-            rotationDeltaVector += ScaleWithTime(scaledRotation, 2.0f, 500.0f);
+
+            rotationDeltaVector += ScaleWithTime(scaledRotation, 
+                self.Config.RotationSensitivity,
+                self.Config.RotationBase
+            );
         }
 
         private Vector3 ScaleWithTime(Vector3 input, float sensitivity, float baseValue)
