@@ -7,8 +7,9 @@
 [Bb]in/
 [Oo]bj/
 
-#Ignore Nuget packages folder.
+#Ignore packages from NuGet and NPM.
 [Pp]ackages/
+[Nn]ode_modules/
 
 #Ignore private folders for the server.
 [Pp]riv/
@@ -18,3 +19,6 @@
 
 #Ignore the server artifacts, new cloners should add this themselves.
 [Aa]rtifacts/
+
+#Ignore source maps
+*.map

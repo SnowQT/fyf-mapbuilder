@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYF.MapBuilder.Client", "FY
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYF.MapBuilder.Server", "FYF.MapBuilder.Server\FYF.MapBuilder.Server.csproj", "{824C8DD9-FAF0-4907-9BE6-DF7A8F04B1DC}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "FYF.MapBuilder.UI", "FYF.MapBuilder.UI\FYF.MapBuilder.UI.njsproj", "{BB122084-AE62-4C36-92ED-614207589ABC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{824C8DD9-FAF0-4907-9BE6-DF7A8F04B1DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{824C8DD9-FAF0-4907-9BE6-DF7A8F04B1DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{824C8DD9-FAF0-4907-9BE6-DF7A8F04B1DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB122084-AE62-4C36-92ED-614207589ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB122084-AE62-4C36-92ED-614207589ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB122084-AE62-4C36-92ED-614207589ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB122084-AE62-4C36-92ED-614207589ABC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

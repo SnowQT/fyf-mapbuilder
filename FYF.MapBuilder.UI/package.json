@@ -1,0 +1,25 @@
+{
+  "name": "FYF.MapBuilder.UI",
+  "version": "0.0.1",
+  "description": "FYF.MapBuilder.UI",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "path": "^0.12.7",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "ts-loader": "^6.1.0",
+    "typescript": "^3.6.3",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.8",
+    "webpack-stream": "^5.2.1"
+  },
+  "scripts": {
+    "build": "webpack-cli --mode=\"development\" src/main.js --config webpack-config.js",
+    "buildp": "webpack-cli --mode=\"production\" src/main.js --config webpack-config.js"
+  }
+}
