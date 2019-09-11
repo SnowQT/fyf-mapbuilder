@@ -46,6 +46,7 @@
     <Compile Include="Freecam\FreecamInput.cs" />
     <Compile Include="MapBuilderClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Focus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

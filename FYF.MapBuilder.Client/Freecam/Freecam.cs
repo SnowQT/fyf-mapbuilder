@@ -33,34 +33,24 @@ namespace FYF.MapBuilder.Client
         {
             camera.Create();
             FreezePlayerPed();
+            Focus.Set(camera.Position, camera.Rotation);
+
             Enabled = true;
         }
 
         public void DisableFreecam()
         {
             camera.Destroy();
-            UnfreezePlayerPed();   
+            UnfreezePlayerPed();
+            Focus.Clear();
+
             Enabled = false;
         }
 
         public async Task Update()
         {
-            //Update the minimap.
-            if (Enabled)
+            if (!Enabled)
             {
-                SetFocusArea(camera.Position.X, camera.Position.Y, camera.Position.Z, 0.0f, 0.0f, 0.0f);
-                LockMinimapPosition(camera.Position.X, camera.Position.Y);
-                LockMinimapAngle(-((int)camera.Rotation.Z));
-                SetRadarZoomLevelThisFrame(100.0f);
-            }
-            else
-            {
-                //@TODO: This shouldn't be called every frame,
-                UnlockMinimapPosition();
-                UnlockMinimapAngle();
-                ClearFocus();
-
-                await BaseScript.Delay(500);
                 return;
             }
 
@@ -68,6 +58,7 @@ namespace FYF.MapBuilder.Client
             input.PollMouse();
 
             camera.Update();
+            Focus.Set(camera.Position, camera.Rotation);
 
             await Task.FromResult(0);
         }
