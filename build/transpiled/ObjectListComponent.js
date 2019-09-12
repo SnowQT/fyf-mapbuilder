@@ -19,22 +19,22 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
 var React = __importStar(require("react"));
-var ObjectListComponent_1 = __importDefault(require("./ObjectListComponent"));
-var MapBuilderComponent = (function (_super) {
-    __extends(MapBuilderComponent, _super);
-    function MapBuilderComponent() {
+var Data = __importStar(require("./assets/meta/objects.json"));
+var ObjectListComponent = (function (_super) {
+    __extends(ObjectListComponent, _super);
+    function ObjectListComponent() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    MapBuilderComponent.prototype.render = function () {
-        return (React.createElement(ObjectListComponent_1["default"], null,
-            React.createElement("h1", null, "Hello ObjectList!")));
+    ObjectListComponent.prototype.componentDidMount = function () {
+        console.log('I was triggered during componentDidMount, DATA: ' + JSON.stringify(Data));
     };
-    return MapBuilderComponent;
+    ObjectListComponent.prototype.render = function () {
+        return (React.createElement("ul", null,
+            React.createElement("li", { key: "life" }, "Awesome!")));
+    };
+    return ObjectListComponent;
 }(React.Component));
-exports["default"] = MapBuilderComponent;
-//# sourceMappingURL=MapBuilderApp.js.map
+exports["default"] = ObjectListComponent;
+//# sourceMappingURL=ObjectListComponent.js.map

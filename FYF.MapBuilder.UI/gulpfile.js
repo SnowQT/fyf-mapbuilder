@@ -14,7 +14,7 @@ const FilesToCopy = [
 ];
 
 const FoldersToCopy = [
-    "./assets/**/*"
+    "./src/assets/**/*"
 ]
 
 Gulp.task("build", () => {

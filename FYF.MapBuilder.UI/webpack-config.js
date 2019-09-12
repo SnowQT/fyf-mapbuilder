@@ -1,7 +1,7 @@
 const Visualizer = require("webpack-visualizer-plugin")
 
 module.exports = {
-    devtool: 'source-map',
+    devtool: "source-map",
     entry: "./src/main.tsx",
     mode: "production",
     output: {
@@ -9,7 +9,7 @@ module.exports = {
         
     },
     resolve: {
-        extensions: ['.Webpack.js', '.web.js', '.ts', '.js', '.jsx', '.tsx']
+        extensions: [".Webpack.js", ".web.js", ".ts", ".js", ".jsx", ".tsx", ".json"]
     },
     module: {
         rules: [
@@ -17,7 +17,7 @@ module.exports = {
                 test: /\.tsx$/,
                 exclude: /(node_modules|bower_components)/,
                 use: {
-                    loader: 'ts-loader'
+                    loader: "ts-loader"
                 }
             }
         ]

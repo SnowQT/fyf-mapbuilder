@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "module": "commonjs",
     "moduleResolution": "node",
     "noResolve": false,
     "noImplicitAny": false,
@@ -8,10 +9,12 @@
     "allowJs": true,
     "jsx": "react",
     "outDir": "../build/transpiled/",
-    "typeRoots": [ "node_modules/@types" ]
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "typeRoots": [ "node_modules/@types", "./src/typings.d.ts" ]
   },
   "include": [
-    "@types/**/*.d.ts",
+    "@types/**/*.d.ts"
   ],
 
   "exclude": [
