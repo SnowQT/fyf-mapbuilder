@@ -22,3 +22,6 @@
 
 #Ignore source maps
 *.map
+
+#Ignore the webpack visualizer page.
+stats.html
