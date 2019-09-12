@@ -9,6 +9,12 @@ const WebpackStream = require("webpack-stream");
 const buildPath = "./build/";
 const outputPath = "../server/data/resources/fyf-mapbuilder/nui/";
 
+const ItemsToCopyToOutput = [
+    "./build/mapbuilder-bundle.js",
+    "./index.html",
+    "./assets/*"
+];
+
 Gulp.task("build", () => {
     return WebpackStream(WebpackConfig)
         .pipe(Gulp.dest(buildPath));
@@ -20,7 +26,7 @@ Gulp.task("clean", () => {
 });
 
 Gulp.task("clean-copy-build", Gulp.series(["clean", "build"], (done) => {
-    Gulp.src(["./build/mapbuilder-bundle.js", "./index.html"])
+    Gulp.src(ItemsToCopyToOutput)
         .pipe(Gulp.dest(outputPath));
     done();
 }));

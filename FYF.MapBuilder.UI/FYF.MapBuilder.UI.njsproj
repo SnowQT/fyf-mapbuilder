@@ -32,7 +32,7 @@
     <DebugSymbols>true</DebugSymbols>
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
-    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
@@ -61,10 +61,17 @@
     <TypeScriptCompile Include="src\MapBuilderApp.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\ObjectListComponent.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="assets\css\" />
+    <Folder Include="assets\meta\" />
+    <Folder Include="assets\img\" />
     <Folder Include="build\" />
     <Folder Include="build\transpiled\" />
+    <Folder Include="assets\" />
     <Folder Include="src\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
