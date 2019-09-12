@@ -73,7 +73,7 @@
     <Folder Include="src\assets\meta\" />
     <Folder Include="src\assets\img\" />
     <Folder Include="build\" />
-    <Folder Include="build\transpiled\" />
+    <Folder Include="build\compiled\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\" />
   </ItemGroup>
