@@ -1,24 +1,24 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
     "moduleResolution": "node",
     "noResolve": false,
     "noImplicitAny": false,
-    "noEmitOnError": true,
     "removeComments": true,
     "sourceMap": true,
     "allowJs": true,
     "jsx": "react",
     "outDir": "../build/transpiled/",
-    "allowSyntheticDefaultImports": true
+    "typeRoots": [ "node_modules/@types" ]
   },
+  "include": [
+    "@types/**/*.d.ts",
+  ],
 
   "exclude": [
-    "node_modules"
+    "./node_modules/**/*"
   ],
 
   "files": [
-    "MapBuilderApp.tsx"
+    "src/MapBuilderApp.tsx"
   ]
 }

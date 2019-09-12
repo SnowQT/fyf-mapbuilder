@@ -30,9 +30,9 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptTarget>ES2015</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
-    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
@@ -50,8 +50,9 @@
   <ItemGroup>
     <Compile Include="gulpfile.js" />
     <Compile Include="src\main.tsx" />
-    <Compile Include="src\tsconfig.json" />
+    <Compile Include="tsconfig.json" />
     <Compile Include="webpack-config.js" />
+    <Content Include="assets\meta\test.json" />
     <Content Include="index.html">
       <SubType>Code</SubType>
     </Content>
