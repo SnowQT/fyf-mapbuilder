@@ -22,6 +22,7 @@
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
     "webpack": "^4.39.3",
-    "webpack-stream": "^5.2.1"
+    "webpack-stream": "^5.2.1",
+    "webpack-visualizer-plugin": "^0.1.11"
   }
 }

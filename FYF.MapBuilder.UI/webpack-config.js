@@ -1,3 +1,5 @@
+const Visualizer = require("webpack-visualizer-plugin")
+
 module.exports = {
     devtool: 'source-map',
     entry: "./src/main.tsx",
@@ -19,5 +21,11 @@ module.exports = {
                 }
             }
         ]
+    },
+    plugins: [
+        new Visualizer(),
+    ],
+    optimization: {
+        minimize: true
     }
 }
