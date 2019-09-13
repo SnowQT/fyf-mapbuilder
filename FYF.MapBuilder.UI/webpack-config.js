@@ -6,7 +6,6 @@ module.exports = {
     mode: "development",
     output: {
         filename: "./mapbuilder-bundle.js",
-        
     },
     resolve: {
         extensions: [".Webpack.js", ".web.js", ".ts", ".js", ".jsx", ".tsx", ".json"]

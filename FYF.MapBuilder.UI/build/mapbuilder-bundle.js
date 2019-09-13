@@ -29287,25 +29287,53 @@ if (false) {} else {
 
 /***/ }),
 
-/***/ "./src/MapBuilderApp.js":
-/*!******************************!*\
-  !*** ./src/MapBuilderApp.js ***!
-  \******************************/
+/***/ "./src/MapBuilderApp.tsx":
+/*!*******************************!*\
+  !*** ./src/MapBuilderApp.tsx ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-const ObjectListComponent_1 = __webpack_require__(/*! ./ObjectListComponent */ "./src/ObjectListComponent.js");
-class MapBuilderComponent extends React.Component {
-    render() {
-        return React.createElement(ObjectListComponent_1.default, null);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var React = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var ObjectListComponent_1 = __importDefault(__webpack_require__(/*! ./ObjectListComponent */ "./src/ObjectListComponent.js"));
+var MapBuilderComponent = (function (_super) {
+    __extends(MapBuilderComponent, _super);
+    function MapBuilderComponent() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-exports.default = MapBuilderComponent;
-//# sourceMappingURL=MapBuilderApp.js.map
+    MapBuilderComponent.prototype.render = function () {
+        return React.createElement(ObjectListComponent_1["default"], null);
+    };
+    return MapBuilderComponent;
+}(React.Component));
+exports["default"] = MapBuilderComponent;
+
 
 /***/ }),
 
@@ -29411,7 +29439,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var React = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 var react_dom_1 = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-var MapBuilderApp_1 = __importDefault(__webpack_require__(/*! ./MapBuilderApp */ "./src/MapBuilderApp.js"));
+var MapBuilderApp_1 = __importDefault(__webpack_require__(/*! ./MapBuilderApp */ "./src/MapBuilderApp.tsx"));
 react_dom_1.render(React.createElement(MapBuilderApp_1["default"], null), document.getElementById("root"));
 
 
