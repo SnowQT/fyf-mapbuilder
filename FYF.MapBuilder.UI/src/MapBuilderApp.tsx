@@ -4,10 +4,6 @@ import ObjectListComponent from "./ObjectListComponent";
 export default class MapBuilderComponent extends React.Component {
 
     render() {
-        return (
-            <ObjectListComponent>
-                <h1>Hello ObjectList!</h1>
-            </ObjectListComponent>
-        );
+        return <ObjectListComponent/>
     }
 }

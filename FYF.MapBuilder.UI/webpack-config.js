@@ -3,7 +3,7 @@ const Visualizer = require("webpack-visualizer-plugin")
 module.exports = {
     devtool: "source-map",
     entry: "./src/main.tsx",
-    mode: "production",
+    mode: "development",
     output: {
         filename: "./mapbuilder-bundle.js",
         
@@ -25,7 +25,4 @@ module.exports = {
     plugins: [
         new Visualizer(),
     ],
-    optimization: {
-        minimize: true
-    }
 }
