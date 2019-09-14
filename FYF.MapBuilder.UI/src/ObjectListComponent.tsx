@@ -1,10 +1,10 @@
 ﻿import * as React from "react";
-import * as JsonObjectsList from "./assets/meta/objects.json"
+import * as JsonObjectsList from "./assets/meta/objects.json";
+import { SendNuiMessage } from "./helper/NuiHelper";
 
 export interface ObjectListProps {
-
+    //hidden: boolean;
 }
-
 interface ObjectListState {
     currentSelectedObject: ObjectListItem;
 }
@@ -36,9 +36,34 @@ class ObjectListComponent extends React.Component<ObjectListProps, ObjectListSta
         this.state = { currentSelectedObject: objectListItem };
     }
 
+    OnObjectChanged(variant: string) {
+        const { currentSelectedObject } = this.state;
+        let objectName = `${currentSelectedObject}`;
+
+        //No variant was supplied, pick the first one.
+        if (variant === "") {
+
+            //We have atleast one variant we can pick from.
+            //  If we have no variants, we want to use the name of the current object without any variant.
+            if (currentSelectedObject.variants.length > 0) {
+                let firstVariant = currentSelectedObject.variants[0];
+                objectName += `_${firstVariant}`;
+            }
+        }
+        //Else we us the variant we got supplied.
+        else {
+            objectName += `_${variant}`;
+        }
+
+        //Send a message back to the client.
+        SendNuiMessage("ObjectChanged", {
+            name: objectName
+        });
+    }
+
     OnObjectSelected = (event) => {
         let objectName: string = event.target.value;
-        let foundObject = JsonObjectsList.find(obj => obj.name == objectName);
+        let foundObject = JsonObjectsList.find(obj => obj.name === objectName);
 
         if (foundObject == undefined) {
             console.log("Unknown selected object.")
@@ -50,23 +75,25 @@ class ObjectListComponent extends React.Component<ObjectListProps, ObjectListSta
             foundObject.category, foundObject.tags
         );
 
-        this.setState({ currentSelectedObject: objectListItem });
+        this.setState({ currentSelectedObject: objectListItem }, () => {
+            this.OnObjectChanged("");
+        });
     }
 
     OnObjectVariantChanged = (event) => {
-        console.log(event.target.value);
+        this.OnObjectChanged(event.target.value);
     }
 
     render(): any {
         const { currentSelectedObject } = this.state;
 
         const currentObjectVariantsSelect = currentSelectedObject.variants.map(variant => {
-            return <option value={variant}>{variant}</option>
+            return <option key={variant} value={variant}>{variant}</option>
         });
 
         const listItemsObject = JsonObjectsList.map(obj => {
             return (
-                <option value={obj.name}> {obj.name} </option>
+                <option key={obj.name} value={obj.name}>{obj.name}</option>
             )
         });
 

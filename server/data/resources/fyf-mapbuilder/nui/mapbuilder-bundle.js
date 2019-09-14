@@ -29287,53 +29287,25 @@ if (false) {} else {
 
 /***/ }),
 
-/***/ "./src/MapBuilderApp.tsx":
-/*!*******************************!*\
-  !*** ./src/MapBuilderApp.tsx ***!
-  \*******************************/
+/***/ "./src/MapBuilderApp.js":
+/*!******************************!*\
+  !*** ./src/MapBuilderApp.js ***!
+  \******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-exports.__esModule = true;
-var React = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
-var ObjectListComponent_1 = __importDefault(__webpack_require__(/*! ./ObjectListComponent */ "./src/ObjectListComponent.js"));
-var MapBuilderComponent = (function (_super) {
-    __extends(MapBuilderComponent, _super);
-    function MapBuilderComponent() {
-        return _super !== null && _super.apply(this, arguments) || this;
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+const ObjectListComponent_1 = __webpack_require__(/*! ./ObjectListComponent */ "./src/ObjectListComponent.js");
+class MapBuilderComponent extends React.Component {
+    render() {
+        return React.createElement(ObjectListComponent_1.default, null);
     }
-    MapBuilderComponent.prototype.render = function () {
-        return React.createElement(ObjectListComponent_1["default"], null);
-    };
-    return MapBuilderComponent;
-}(React.Component));
-exports["default"] = MapBuilderComponent;
-
+}
+exports.default = MapBuilderComponent;
+//# sourceMappingURL=MapBuilderApp.js.map
 
 /***/ }),
 
@@ -29349,6 +29321,7 @@ exports["default"] = MapBuilderComponent;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 const JsonObjectsList = __webpack_require__(/*! ./assets/meta/objects.json */ "./src/assets/meta/objects.json");
+const NuiHelper_1 = __webpack_require__(/*! ./helper/NuiHelper */ "./src/helper/NuiHelper.js");
 class ObjectListItem {
     constructor(name, image, variants, category, tags) {
         this.name = name;
@@ -29364,30 +29337,39 @@ class ObjectListComponent extends React.Component {
         this.maxSelectSize = 21;
         this.OnObjectSelected = (event) => {
             let objectName = event.target.value;
-            let foundObject = JsonObjectsList.find(obj => obj.name == objectName);
+            let foundObject = JsonObjectsList.find(obj => obj.name === objectName);
             if (foundObject == undefined) {
                 console.log("Unknown selected object.");
                 return;
             }
             const objectListItem = new ObjectListItem(foundObject.name, foundObject.image, foundObject.variants, foundObject.category, foundObject.tags);
-            this.setState({ currentSelectedObject: objectListItem });
+            this.setState({ currentSelectedObject: objectListItem }, () => {
+                this.OnObjectChanged("");
+            });
         };
         this.OnObjectVariantChanged = (event) => {
-            console.log(event.target.value);
+            const { currentSelectedObject } = this.state;
+            this.OnObjectChanged(event.target.value);
         };
         const objectListItem = new ObjectListItem("unknown", "", [], [], []);
         this.state = { currentSelectedObject: objectListItem };
     }
+    componentDidMount() {
+        NuiHelper_1.ReceiveNuiMessage("hide", (type, data) => {
+            console.log(`Type: ${type}, Data: ${JSON.stringify(data)}`);
+        });
+    }
+    OnObjectChanged(variant) {
+        const { currentSelectedObject } = this.state;
+        console.log(`${currentSelectedObject.name}_${variant}`);
+    }
     render() {
         const { currentSelectedObject } = this.state;
         const currentObjectVariantsSelect = currentSelectedObject.variants.map(variant => {
-            return React.createElement("option", { value: variant }, variant);
+            return React.createElement("option", { key: variant, value: variant }, variant);
         });
         const listItemsObject = JsonObjectsList.map(obj => {
-            return (React.createElement("option", { value: obj.name },
-                " ",
-                obj.name,
-                " "));
+            return (React.createElement("option", { key: obj.name, value: obj.name }, obj.name));
         });
         return (React.createElement("div", { id: "object-list" },
             React.createElement("h3", null, "Objects"),
@@ -29417,6 +29399,44 @@ module.exports = JSON.parse("[{\"name\":\"stt_prop_corner_sign\",\"variants\":[\
 
 /***/ }),
 
+/***/ "./src/helper/NuiHelper.js":
+/*!*********************************!*\
+  !*** ./src/helper/NuiHelper.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function ReceiveNuiMessage(messageType, callback) {
+    window.addEventListener("message", (event) => {
+        if (event.data.messageType === messageType) {
+            if (callback && typeof (callback) === "function") {
+                callback(messageType, event.data);
+            }
+        }
+    });
+}
+exports.ReceiveNuiMessage = ReceiveNuiMessage;
+function SendNuiMessage(resource, event, data) {
+    const endpoint = `http://${resource}/${event}`;
+    const payload = JSON.stringify(data);
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    };
+    fetch(endpoint, {
+        method: 'POST',
+        headers: headers,
+        body: payload
+    });
+}
+exports.SendNuiMessage = SendNuiMessage;
+//# sourceMappingURL=NuiHelper.js.map
+
+/***/ }),
+
 /***/ "./src/main.tsx":
 /*!**********************!*\
   !*** ./src/main.tsx ***!
@@ -29439,7 +29459,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var React = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 var react_dom_1 = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-var MapBuilderApp_1 = __importDefault(__webpack_require__(/*! ./MapBuilderApp */ "./src/MapBuilderApp.tsx"));
+var MapBuilderApp_1 = __importDefault(__webpack_require__(/*! ./MapBuilderApp */ "./src/MapBuilderApp.js"));
 react_dom_1.render(React.createElement(MapBuilderApp_1["default"], null), document.getElementById("root"));
 
 

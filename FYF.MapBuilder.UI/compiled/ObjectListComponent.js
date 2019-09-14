@@ -22,6 +22,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 exports.__esModule = true;
 var React = __importStar(require("react"));
 var JsonObjectsList = __importStar(require("./assets/meta/objects.json"));
+var NuiHelper_1 = require("./helper/NuiHelper");
 var ObjectListItem = (function () {
     function ObjectListItem(name, image, variants, category, tags) {
         this.name = name;
@@ -39,7 +40,7 @@ var ObjectListComponent = (function (_super) {
         _this.maxSelectSize = 21;
         _this.OnObjectSelected = function (event) {
             var objectName = event.target.value;
-            var foundObject = JsonObjectsList.find(function (obj) { return obj.name == objectName; });
+            var foundObject = JsonObjectsList.find(function (obj) { return obj.name === objectName; });
             if (foundObject == undefined) {
                 console.log("Unknown selected object.");
                 return;
@@ -54,6 +55,11 @@ var ObjectListComponent = (function (_super) {
         _this.state = { currentSelectedObject: objectListItem };
         return _this;
     }
+    ObjectListComponent.prototype.componentDidMount = function () {
+        NuiHelper_1.ReceiveNuiMessage("hide", function (type, data) {
+            console.log("Type: " + type + ", Data: " + JSON.stringify(data));
+        });
+    };
     ObjectListComponent.prototype.render = function () {
         var currentSelectedObject = this.state.currentSelectedObject;
         var currentObjectVariantsSelect = currentSelectedObject.variants.map(function (variant) {
