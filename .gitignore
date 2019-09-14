@@ -6,6 +6,7 @@
 [Rr]elease/
 [Bb]in/
 [Oo]bj/
+[Bb]uild/
 
 #Ignore packages from NuGet and NPM.
 [Pp]ackages/
