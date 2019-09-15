@@ -29300,8 +29300,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 const ObjectListComponent_1 = __webpack_require__(/*! ./ObjectListComponent */ "./src/ObjectListComponent.js");
 class MapBuilderComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { isOpened: false };
+    }
     render() {
-        return React.createElement(ObjectListComponent_1.default, null);
+        const { isOpened } = this.state;
+        if (isOpened) {
+            return React.createElement(ObjectListComponent_1.default, null);
+        }
+        return null;
     }
 }
 exports.default = MapBuilderComponent;
@@ -29321,7 +29329,7 @@ exports.default = MapBuilderComponent;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 const JsonObjectsList = __webpack_require__(/*! ./assets/meta/objects.json */ "./src/assets/meta/objects.json");
-const NuiHelper_1 = __webpack_require__(/*! ./helper/NuiHelper */ "./src/helper/NuiHelper.js");
+const NuiHelper_1 = __webpack_require__(/*! ./helper/NuiHelper */ "./src/helper/NuiHelper.tsx");
 class ObjectListItem {
     constructor(name, image, variants, category, tags) {
         this.name = name;
@@ -29348,20 +29356,31 @@ class ObjectListComponent extends React.Component {
             });
         };
         this.OnObjectVariantChanged = (event) => {
-            const { currentSelectedObject } = this.state;
             this.OnObjectChanged(event.target.value);
         };
         const objectListItem = new ObjectListItem("unknown", "", [], [], []);
         this.state = { currentSelectedObject: objectListItem };
     }
-    componentDidMount() {
-        NuiHelper_1.ReceiveNuiMessage("hide", (type, data) => {
-            console.log(`Type: ${type}, Data: ${JSON.stringify(data)}`);
-        });
-    }
     OnObjectChanged(variant) {
         const { currentSelectedObject } = this.state;
-        console.log(`${currentSelectedObject.name}_${variant}`);
+        let objectName = `${currentSelectedObject}`;
+        //No variant was supplied, pick the first one.
+        if (variant === "") {
+            //We have atleast one variant we can pick from.
+            //  If we have no variants, we want to use the name of the current object without any variant.
+            if (currentSelectedObject.variants.length > 0) {
+                let firstVariant = currentSelectedObject.variants[0];
+                objectName += `_${firstVariant}`;
+            }
+        }
+        //Else we us the variant we got supplied.
+        else {
+            objectName += `_${variant}`;
+        }
+        //Send a message back to the client.
+        NuiHelper_1.SendNuiMessage("ObjectChanged", {
+            name: objectName
+        });
     }
     render() {
         const { currentSelectedObject } = this.state;
@@ -29399,18 +29418,18 @@ module.exports = JSON.parse("[{\"name\":\"stt_prop_corner_sign\",\"variants\":[\
 
 /***/ }),
 
-/***/ "./src/helper/NuiHelper.js":
-/*!*********************************!*\
-  !*** ./src/helper/NuiHelper.js ***!
-  \*********************************/
+/***/ "./src/helper/NuiHelper.tsx":
+/*!**********************************!*\
+  !*** ./src/helper/NuiHelper.tsx ***!
+  \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 function ReceiveNuiMessage(messageType, callback) {
-    window.addEventListener("message", (event) => {
+    window.addEventListener("message", function (event) {
         if (event.data.messageType === messageType) {
             if (callback && typeof (callback) === "function") {
                 callback(messageType, event.data);
@@ -29419,10 +29438,10 @@ function ReceiveNuiMessage(messageType, callback) {
     });
 }
 exports.ReceiveNuiMessage = ReceiveNuiMessage;
-function SendNuiMessage(resource, event, data) {
-    const endpoint = `http://${resource}/${event}`;
-    const payload = JSON.stringify(data);
-    const headers = {
+function SendNuiMessage(eventName, data) {
+    var endpoint = "http://fyf-mapbuilder/" + eventName;
+    var payload = JSON.stringify(data);
+    var headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     };
@@ -29433,7 +29452,7 @@ function SendNuiMessage(resource, event, data) {
     });
 }
 exports.SendNuiMessage = SendNuiMessage;
-//# sourceMappingURL=NuiHelper.js.map
+
 
 /***/ }),
 

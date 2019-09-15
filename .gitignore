@@ -30,3 +30,4 @@ stats.html
 #Ignore .js and .js.map files that always magically seem to appear in my src/ directory. Shoosh, go away!
 FYF.MapBuilder.UI/src/**/*.js
 FYF.MapBuilder.UI/src/**/*.js.map
+FYF.MapBuilder.UI/compiled/

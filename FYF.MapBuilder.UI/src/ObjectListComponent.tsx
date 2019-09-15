@@ -3,8 +3,8 @@ import * as JsonObjectsList from "./assets/meta/objects.json";
 import { SendNuiMessage } from "./helper/NuiHelper";
 
 export interface ObjectListProps {
-    //hidden: boolean;
 }
+
 interface ObjectListState {
     currentSelectedObject: ObjectListItem;
 }
