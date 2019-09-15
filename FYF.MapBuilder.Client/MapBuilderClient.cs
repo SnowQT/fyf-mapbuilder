@@ -8,6 +8,7 @@ namespace FYF.MapBuilder.Client
     public class MapBuilderClient : BaseScript
     {
         private Freecam freeCam;
+        private UserInterface ui;
 
         public MapBuilderClient()
         {
@@ -22,7 +23,10 @@ namespace FYF.MapBuilder.Client
             };
 
             freeCam = new Freecam(config);
+            ui = new UserInterface();
+
             Tick += freeCam.Update;
+            Tick += ui.Update;
 
             EventHandlers.Add("onResourceStop", new Action<string>(OnResourceStopped));
         }

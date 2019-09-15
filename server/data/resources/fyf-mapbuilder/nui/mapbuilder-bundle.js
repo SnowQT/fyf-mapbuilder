@@ -29299,17 +29299,30 @@ if (false) {} else {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 const ObjectListComponent_1 = __webpack_require__(/*! ./ObjectListComponent */ "./src/ObjectListComponent.js");
+const NuiHelper_1 = __webpack_require__(/*! ./helper/NuiHelper */ "./src/helper/NuiHelper.js");
 class MapBuilderComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = { isOpened: false };
     }
+    componentDidMount() {
+        NuiHelper_1.ReceiveNuiMessage("openCloseState", (data) => {
+            this.setVisibility();
+        });
+    }
+    setVisibility() {
+        const { isOpened } = this.state;
+        let newState = !isOpened;
+        this.setState({
+            isOpened: newState
+        });
+    }
     render() {
         const { isOpened } = this.state;
-        if (isOpened) {
-            return React.createElement(ObjectListComponent_1.default, null);
+        if (!isOpened) {
+            return null;
         }
-        return null;
+        return (React.createElement(ObjectListComponent_1.default, null));
     }
 }
 exports.default = MapBuilderComponent;
@@ -29329,7 +29342,7 @@ exports.default = MapBuilderComponent;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 const JsonObjectsList = __webpack_require__(/*! ./assets/meta/objects.json */ "./src/assets/meta/objects.json");
-const NuiHelper_1 = __webpack_require__(/*! ./helper/NuiHelper */ "./src/helper/NuiHelper.tsx");
+const NuiHelper_1 = __webpack_require__(/*! ./helper/NuiHelper */ "./src/helper/NuiHelper.js");
 class ObjectListItem {
     constructor(name, image, variants, category, tags) {
         this.name = name;
@@ -29418,30 +29431,31 @@ module.exports = JSON.parse("[{\"name\":\"stt_prop_corner_sign\",\"variants\":[\
 
 /***/ }),
 
-/***/ "./src/helper/NuiHelper.tsx":
-/*!**********************************!*\
-  !*** ./src/helper/NuiHelper.tsx ***!
-  \**********************************/
+/***/ "./src/helper/NuiHelper.js":
+/*!*********************************!*\
+  !*** ./src/helper/NuiHelper.js ***!
+  \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 function ReceiveNuiMessage(messageType, callback) {
-    window.addEventListener("message", function (event) {
-        if (event.data.messageType === messageType) {
+    window.addEventListener("message", (event) => {
+        const message = event.data;
+        if (message.messageType === messageType) {
             if (callback && typeof (callback) === "function") {
-                callback(messageType, event.data);
+                callback(message);
             }
         }
     });
 }
 exports.ReceiveNuiMessage = ReceiveNuiMessage;
 function SendNuiMessage(eventName, data) {
-    var endpoint = "http://fyf-mapbuilder/" + eventName;
-    var payload = JSON.stringify(data);
-    var headers = {
+    const endpoint = `http://fyf-mapbuilder/${eventName}`;
+    const payload = JSON.stringify(data);
+    const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     };
@@ -29452,7 +29466,7 @@ function SendNuiMessage(eventName, data) {
     });
 }
 exports.SendNuiMessage = SendNuiMessage;
-
+//# sourceMappingURL=NuiHelper.js.map
 
 /***/ }),
 
@@ -29475,11 +29489,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
-var React = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
-var react_dom_1 = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-var MapBuilderApp_1 = __importDefault(__webpack_require__(/*! ./MapBuilderApp */ "./src/MapBuilderApp.js"));
-react_dom_1.render(React.createElement(MapBuilderApp_1["default"], null), document.getElementById("root"));
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+const react_dom_1 = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+const MapBuilderApp_1 = __importDefault(__webpack_require__(/*! ./MapBuilderApp */ "./src/MapBuilderApp.js"));
+react_dom_1.render(React.createElement(MapBuilderApp_1.default, null), document.getElementById("root"));
 
 
 /***/ })

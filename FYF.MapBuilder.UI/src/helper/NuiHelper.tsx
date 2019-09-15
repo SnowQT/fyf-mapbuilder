@@ -1,10 +1,11 @@
-﻿declare type NuiCallback = (type: string, data: any) => void;
+﻿declare type NuiCallback = (data: any) => void;
 
 export function ReceiveNuiMessage(messageType: string, callback: NuiCallback) {
     window.addEventListener("message", (event) => {
-        if (event.data.messageType === messageType) {
+        const message = event.data;
+        if (message.messageType === messageType) {
             if (callback && typeof(callback) === "function") {
-                callback(messageType, event.data);
+                callback(message);
             }
         }
     });
