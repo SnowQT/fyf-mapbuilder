@@ -17,17 +17,19 @@ class MapBuilderComponent extends React.Component<MapBuilderProps, MapBuilderSta
     }
 
     componentDidMount() {
-        ReceiveNuiMessage("openCloseState", (data) => {
-            this.setVisibility();
+        ReceiveNuiMessage("open", (data) => {
+            this.setVisibility(true);
+        });
+
+        ReceiveNuiMessage("close", (data) => {
+            this.setVisibility(false);
         });
     }
 
-    setVisibility() {
-        const { isOpened } = this.state;
-        let newState = !isOpened;
-
+    setVisibility(visible: boolean) {
+        console.log("Setting visibility to " + visible);
         this.setState({
-            isOpened: newState
+            isOpened: visible
         });
     }
 

@@ -19,7 +19,6 @@ namespace FYF.MapBuilder.Client
 
     internal sealed class Freecam
     {
-        public bool Enabled { get; private set; }
         public FreecamConfig Config { get; private set; }
         
         private FreecamInput input;
@@ -49,8 +48,6 @@ namespace FYF.MapBuilder.Client
             camera.Create();
             FreezePlayerPed();
             Focus.Set(camera.Position, camera.Rotation);
-
-            Enabled = true;
         }
 
         public void DisableFreecam()
@@ -58,24 +55,19 @@ namespace FYF.MapBuilder.Client
             camera.Destroy();
             UnfreezePlayerPed();
             Focus.Clear();
-
-            Enabled = false;
         }
 
-        public async Task Update()
+        public void Update()
         {
-            if (!Enabled)
+            //Check if the camera is valid.
+            if (camera.IsValid)
             {
-                return;
+                input.PollKeys();
+                input.PollMouse();
+
+                camera.Update();
+                Focus.Set(camera.Position, camera.Rotation);
             }
-
-            input.PollKeys();
-            input.PollMouse();
-
-            camera.Update();
-            Focus.Set(camera.Position, camera.Rotation);
-
-            await Task.FromResult(0);
         }
 
         void OnFreecamForward(float reach)

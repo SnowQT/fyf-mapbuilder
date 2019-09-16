@@ -29306,15 +29306,17 @@ class MapBuilderComponent extends React.Component {
         this.state = { isOpened: false };
     }
     componentDidMount() {
-        NuiHelper_1.ReceiveNuiMessage("openCloseState", (data) => {
-            this.setVisibility();
+        NuiHelper_1.ReceiveNuiMessage("open", (data) => {
+            this.setVisibility(true);
+        });
+        NuiHelper_1.ReceiveNuiMessage("close", (data) => {
+            this.setVisibility(false);
         });
     }
-    setVisibility() {
-        const { isOpened } = this.state;
-        let newState = !isOpened;
+    setVisibility(visible) {
+        console.log("Setting visibility to " + visible);
         this.setState({
-            isOpened: newState
+            isOpened: visible
         });
     }
     render() {
