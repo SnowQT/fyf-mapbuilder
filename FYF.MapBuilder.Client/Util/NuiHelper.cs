@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CitizenFX.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -68,6 +69,7 @@ namespace FYF.MapBuilder.Client
                         SetNuiCallback($"toggleInvoke_{uniqueName}", new Action(() =>
                         {
                             info.CloseFunction();
+                            info.State = false;
                         }));
                     }
                 }
@@ -76,6 +78,7 @@ namespace FYF.MapBuilder.Client
 
         public void SetNuiCallback(string eventName, Delegate callback)
         {
+            RegisterNuiCallbackType(eventName);
             accessor.RegisterEvent($"__cfx_nui:{eventName}", callback);
         }
 
@@ -101,8 +104,15 @@ namespace FYF.MapBuilder.Client
                     }
                 }
             }
+            else
+            {
+                builder.Append("\"");
+            }
 
             builder.Append("}");
+
+
+            Debug.WriteLine(builder.ToString());
             SendNuiMessage(builder.ToString());
         }
     }

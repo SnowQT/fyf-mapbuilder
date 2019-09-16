@@ -51,7 +51,7 @@ namespace FYF.MapBuilder.Client
         public void Open()
         {
             nui.SendMessage("open");
-            SetNuiFocus(false, true);
+            SetNuiFocus(true, true);
 
             OpenState = true;
         }

@@ -38,7 +38,7 @@ class ObjectListComponent extends React.Component<ObjectListProps, ObjectListSta
 
     OnObjectChanged(variant: string) {
         const { currentSelectedObject } = this.state;
-        let objectName = `${currentSelectedObject}`;
+        let objectName = `${currentSelectedObject.name}`;
 
         //No variant was supplied, pick the first one.
         if (variant === "") {

@@ -29446,6 +29446,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function ReceiveNuiMessage(messageType, callback) {
     window.addEventListener("message", (event) => {
         const message = event.data;
+        //Exempt toggle messages.
+        if (message.messageType === "toggleInit") {
+            HandleToggle(message);
+            return;
+        }
         if (message.messageType === messageType) {
             if (callback && typeof (callback) === "function") {
                 callback(message);
@@ -29454,7 +29459,18 @@ function ReceiveNuiMessage(messageType, callback) {
     });
 }
 exports.ReceiveNuiMessage = ReceiveNuiMessage;
+function HandleToggle(data) {
+    let key = parseInt(data.toggleKey);
+    let cbName = data.toggleName;
+    window.onkeydown = function (e) {
+        var pressedKey = parseInt(e.keyCode ? e.keyCode : e.which);
+        if (key === pressedKey) {
+            SendNuiMessage("toggleInvoke_" + cbName, {});
+        }
+    };
+}
 function SendNuiMessage(eventName, data) {
+    console.log("Sending shit back to " + eventName + " with: " + JSON.stringify(data));
     const endpoint = `http://fyf-mapbuilder/${eventName}`;
     const payload = JSON.stringify(data);
     const headers = {
