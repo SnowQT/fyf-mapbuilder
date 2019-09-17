@@ -45,6 +45,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="package.json" />
+    <Content Include="src\assets\css\objectlist.css" />
     <Content Include="src\assets\metadata\objects.json" />
     <Content Include="src\assets\metadata\objects.txt" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { SendNuiMessage } from "../helper/NuiHelper.jsx";
 import JsonObjectsList from "../assets/metadata/objects.json";
-//import style from "./assets/css/objectlist.module.css"
+import styles from "../assets/css/objectlist.css"
 
 class ObjectListItem {
     constructor(name, image, variants, category, tags) {
@@ -17,7 +17,8 @@ class ObjectListComponent extends React.Component  {
     constructor(props) {
         super(props);
 
-        this.maxItems = 20;
+        this.maxItemsObjects = 20;
+        this.maxItemsVariants = 10;
 
         this.state = {
             currentSelectedObject: new ObjectListItem("unknown", "", [], [], [])
@@ -88,10 +89,15 @@ class ObjectListComponent extends React.Component  {
             )
         });
 
+        //Bind the "this" context to the callbacks.
+        const CbObjectChanged = this.OnObjectSelected.bind(this);
+        const CbObjectVariantChanged = this.OnObjectVariantChanged.bind(this);
+
+
         return (
-            <div id="object-list">
+            <div className={styles.container}>
                 <h3>Objects</h3>
-                <select name="objects" onChange={this.OnObjectSelected} size={this.maxSelectSize}>
+                <select name="objects" onChange={CbObjectChanged} size={this.maxItemsObjects}>
                     { listItemsObject }
                 </select>
 
@@ -99,7 +105,7 @@ class ObjectListComponent extends React.Component  {
                 <div>
                     <h5>Name: {currentSelectedObject.name}</h5>
                     <h5>Variants:</h5>
-                    <select name="variants" onChange={this.OnObjectVariantChanged}>
+                    <select name="variants" onChange={CbObjectVariantChanged} size={this.maxItemsVariants}>
                         { currentObjectVariantsSelect }
                     </select>
                 </div>

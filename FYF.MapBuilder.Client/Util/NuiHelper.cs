@@ -50,28 +50,32 @@ namespace FYF.MapBuilder.Client
                 //If the current toggle is closed, we should poll it's keys.
                 if (!info.State)
                 {
-                    if (IsControlJustPressed(0, info.KeyCode) ||
-                        IsDisabledControlJustPressed(0, info.KeyCode))
+                    if (!IsControlJustPressed(0, info.KeyCode) ||
+                        !IsDisabledControlJustPressed(0, info.KeyCode))
                     {
-                        info.OpenFunction();
-                        info.State = true;
-
-                        string uniqueName = Guid.NewGuid().ToString("n");
-
-                        var values = new Dictionary<string, string>
-                        {
-                            { "toggleName", uniqueName },
-                            { "toggleKey", info.KeyName }
-                        };
-
-                        SendMessage("toggleInit", values);
-
-                        SetNuiCallback($"toggleInvoke_{uniqueName}", new Action(() =>
-                        {
-                            info.CloseFunction();
-                            info.State = false;
-                        }));
+                        continue;
                     }
+                    
+                    //Open the toggle and set the state accordingly.
+                    info.OpenFunction();
+                    info.State = true;
+
+                    //Setup and send the toggleInit information.
+                    string uniqueName = Guid.NewGuid().ToString("n");
+                    var values = new Dictionary<string, string>
+                    {
+                        { "toggleName", uniqueName },
+                        { "toggleKey", info.KeyName }
+                    };
+
+                    SendMessage("toggleInit", values);
+
+                    //Setup the NUI close callback using the unique ID.
+                    SetNuiCallback($"toggleInvoke_{uniqueName}", new Action(() =>
+                    {
+                        info.CloseFunction();
+                        info.State = false;
+                    }));
                 }
             }
         }
