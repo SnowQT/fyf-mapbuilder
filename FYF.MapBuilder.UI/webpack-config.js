@@ -1,27 +1,21 @@
-const Visualizer = require("webpack-visualizer-plugin")
+﻿var path = require("path")
 
 module.exports = {
-    devtool: "source-map",
-    entry: "./src/main.tsx",
+    entry: "./src/Main.jsx",
     mode: "development",
     output: {
+        path: path.resolve(__dirname, "build"),
         filename: "./mapbuilder-bundle.js",
-    },
-    resolve: {
-        extensions: [".Webpack.js", ".web.js", ".ts", ".js", ".jsx", ".tsx", ".json"]
     },
     module: {
         rules: [
             {
-                test: /\.tsx$/,
-                exclude: /(node_modules|bower_components)/,
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
                 use: {
-                    loader: "ts-loader"
+                    loader: "babel-loader"
                 }
             }
         ]
-    },
-    plugins: [
-        new Visualizer(),
-    ],
+    }
 }

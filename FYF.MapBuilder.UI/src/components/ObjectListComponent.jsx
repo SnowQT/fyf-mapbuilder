@@ -1,22 +1,10 @@
-﻿import * as React from "react";
-import * as JsonObjectsList from "./assets/meta/objects.json";
-import { SendNuiMessage } from "./helper/NuiHelper";
-
-export interface ObjectListProps {
-}
-
-interface ObjectListState {
-    currentSelectedObject: ObjectListItem;
-}
+import * as React from "react";
+import { SendNuiMessage } from "../helper/NuiHelper.jsx";
+import JsonObjectsList from "../assets/metadata/objects.json";
+//import style from "./assets/css/objectlist.module.css"
 
 class ObjectListItem {
-    name: string;
-    image: string;
-    variants: Array<string>;
-    category: Array<string>;
-    tags: Array<string>;
-
-    constructor(name : string, image: string, variants : Array<string>, category : Array<string>, tags : Array<string>) {
+    constructor(name, image, variants, category, tags) {
         this.name = name;
         this.image = image;
         this.variants = variants;
@@ -25,18 +13,18 @@ class ObjectListItem {
     }
 }
 
-class ObjectListComponent extends React.Component<ObjectListProps, ObjectListState>  {
-
-    maxSelectSize: number = 21;
-
-    constructor(props: ObjectListProps) {
+class ObjectListComponent extends React.Component  {
+    constructor(props) {
         super(props);
 
-        const objectListItem = new ObjectListItem("unknown", "", [], [], [])
-        this.state = { currentSelectedObject: objectListItem };
+        this.maxItems = 20;
+
+        this.state = {
+            currentSelectedObject: new ObjectListItem("unknown", "", [], [], [])
+        };
     }
 
-    OnObjectChanged(variant: string) {
+    OnObjectChanged(variant) {
         const { currentSelectedObject } = this.state;
         let objectName = `${currentSelectedObject.name}`;
 
@@ -56,37 +44,40 @@ class ObjectListComponent extends React.Component<ObjectListProps, ObjectListSta
         }
 
         //Send a message back to the client.
-        SendNuiMessage("ObjectChanged", {
+        SendNuiMessage("OnObjectChanged", {
             name: objectName
         });
     }
 
-    OnObjectSelected = (event) => {
-        let objectName: string = event.target.value;
+    OnObjectSelected(event) {
+        //Try finding it in the json file.
+        let objectName = event.target.value;
         let foundObject = JsonObjectsList.find(obj => obj.name === objectName);
-
         if (foundObject == undefined) {
-            console.log("Unknown selected object.")
+            console.log(`Could not find ${objectName} in the object metadata.`)
             return;
         }
 
+        //Create a new currently selected object.
         const objectListItem = new ObjectListItem(
             foundObject.name, foundObject.image, foundObject.variants,
             foundObject.category, foundObject.tags
         );
 
+        //Change the state, let game code know we changed objects.
         this.setState({ currentSelectedObject: objectListItem }, () => {
             this.OnObjectChanged("");
         });
     }
 
-    OnObjectVariantChanged = (event) => {
+    OnObjectVariantChanged(event) {
         this.OnObjectChanged(event.target.value);
     }
 
-    render(): any {
+    render() {
         const { currentSelectedObject } = this.state;
 
+        //Map
         const currentObjectVariantsSelect = currentSelectedObject.variants.map(variant => {
             return <option key={variant} value={variant}>{variant}</option>
         });

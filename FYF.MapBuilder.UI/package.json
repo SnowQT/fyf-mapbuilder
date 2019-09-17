@@ -2,7 +2,7 @@
   "name": "fyf-mapbuilder-ui",
   "version": "0.0.1",
   "description": "User interface for the FYF.MapBuilder project.",
-  "main": "src/main.tsx",
+  "main": "src/Main.jsx",
   "author": {
     "name": "thebma"
   },
@@ -12,19 +12,17 @@
   "repository": "https://github.com/thebma/fyf-mapbuilder",
   "private": true,
   "license": "UNLICENSED",
-  "dependencies": {
-    "@types/react": "^16.9.2",
-    "@types/react-dom": "^16.9.0",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "ts-loader": "^6.1.0",
-    "typescript": "^3.6.3"
-  },
   "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
-    "webpack": "^4.39.3",
-    "webpack-stream": "^5.2.1",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "path": "^0.12.7",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "webpack": "^4.40.2",
+    "webpack-stream": "^5.2.1"
   }
 }

@@ -1,6 +1,4 @@
-﻿declare type NuiCallback = (data: any) => void;
-
-export function ReceiveNuiMessage(messageType: string, callback: NuiCallback) {
+export function ReceiveNuiMessage(messageType, callback) {
     window.addEventListener("message", (event) => {
         const message = event.data;
 
@@ -11,18 +9,18 @@ export function ReceiveNuiMessage(messageType: string, callback: NuiCallback) {
         }
 
         if (message.messageType === messageType) {
-            if (callback && typeof(callback) === "function") {
+            if (callback && typeof (callback) === "function") {
                 callback(message);
             }
         }
     });
 }
 
-function HandleToggle(data : any) {
+function HandleToggle(data) {
     let key = parseInt(data.toggleKey);
     let cbName = data.toggleName;
 
-    window.onkeydown = function (e : any) {
+    window.onkeydown = function (e) {
         var pressedKey = parseInt(e.keyCode ? e.keyCode : e.which);
         if (key === pressedKey) {
             SendNuiMessage("toggleInvoke_" + cbName, {});
@@ -30,11 +28,11 @@ function HandleToggle(data : any) {
     }
 }
 
-export function SendNuiMessage(eventName: string, data: any) {
-    console.log("Sending shit back to " + eventName + " with: " + JSON.stringify(data));
+export function SendNuiMessage(eventName, data) {
     const endpoint = `http://fyf-mapbuilder/${eventName}`;
     const payload = JSON.stringify(data);
-    const headers = {
+    const headers =
+    {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
