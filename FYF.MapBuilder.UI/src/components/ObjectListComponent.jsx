@@ -96,7 +96,7 @@ class ObjectListComponent extends React.Component  {
 
         return (
             <div className={styles.container}>
-                <h3>Objects</h3>
+                <h3>Objects are awesomest</h3>
                 <select name="objects" onChange={CbObjectChanged} size={this.maxItemsObjects}>
                     { listItemsObject }
                 </select>

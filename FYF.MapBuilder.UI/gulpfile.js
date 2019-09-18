@@ -1,11 +1,10 @@
-﻿/// <binding AfterBuild='clean-build-copy' />
+﻿/// <binding AfterBuild='deploy' />
 
 const gulp = require("gulp");
-const gulpClean = require("gulp-clean");
-const config = require("./webpack-config");
-const webpackStream = require("webpack-stream");
+const wp = require("webpack")
+const wpconfig = require("./webpack-config");
+var bs = require("browser-sync").create();
 
-const buildPath = "./build/";
 const outputPath = "../server/data/resources/fyf-mapbuilder/nui/";
 
 const FilesToCopy = [
@@ -17,27 +16,50 @@ const FoldersToCopy = [
     "./src/assets/**/*"
 ]
 
-gulp.task("build", () => {
-    //Webpack everything together using webpack-stream.
-    return webpackStream(config)
-        .pipe(gulp.dest(buildPath));
+//Builds and deploys the code to the FiveM server.
+gulp.task("deploy", (done) => {
+    //Let webpack build...
+    wp(wpconfig).run(() => {
+        //Copy over the script files.
+        gulp.src(FilesToCopy)
+            .pipe(gulp.dest(outputPath));
+
+        //Copy over the assets folder.
+        gulp.src(FoldersToCopy)
+            .pipe(gulp.dest(outputPath + "assets/"));
+
+        done();
+    });
 });
 
+//Sets up a live environment for developement.
+gulp.task("live", () => {
+    bs.init({
+        server: {
+            baseDir: "./build",
+            index: "index.html",
+        }
+    });
 
-gulp.task("clean", () => {
-    //Clean the output and build path.
-    return gulp.src([buildPath, outputPath], { read: false, allowEmpty: true })
-        .pipe(gulpClean({ force: true }));
+    //Watch for changes to the index.html.
+    gulp.watch("index.html").on("change", () => {
+        gulp.src("index.html")
+            .pipe(gulp.dest("build"));
+
+        bs.reload();
+    });
+
+    //Watch for any changes to jsx, requires a recompile.
+    gulp.watch("src/**/*.jsx").on("change", () => {
+        wp(wpconfig).run(() => {
+            bs.reload();
+        });
+    });
+
+    //Watch for changes in the style sheets.
+    gulp.watch("src/assets/**/*.css").on("change", () => {
+        wp(wpconfig).run(() => {
+            bs.reload();
+        });
+    });
 });
-
-gulp.task("clean-build-copy", gulp.series(["clean", "build"], (done) => {
-    //Copy over the script filed.
-    gulp.src(FilesToCopy)
-        .pipe(gulp.dest(outputPath));
-
-    //Copy over the assets folder.
-    gulp.src(FoldersToCopy)
-        .pipe(gulp.dest(outputPath + "assets/"));
-
-    done();
-}));
