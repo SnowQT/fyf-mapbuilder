@@ -19,7 +19,7 @@ const FoldersToCopy = [
 //Builds and deploys the code to the FiveM server.
 gulp.task("deploy", (done) => {
     //Let webpack build...
-    wp(wpconfig).run(() => {
+    return wp(wpconfig).run(() => {
         //Copy over the script files.
         gulp.src(FilesToCopy)
             .pipe(gulp.dest(outputPath));
@@ -32,7 +32,7 @@ gulp.task("deploy", (done) => {
     });
 });
 
-//Sets up a live environment for developement.
+//Sets up a live environment for development.
 gulp.task("live", () => {
     bs.init({
         server: {
@@ -57,6 +57,7 @@ gulp.task("live", () => {
     });
 
     //Watch for changes in the style sheets.
+    //@TODO: Possibility to use bs.stream, might overcome the building overhead of webpack.
     gulp.watch("src/assets/**/*.css").on("change", () => {
         wp(wpconfig).run(() => {
             bs.reload();

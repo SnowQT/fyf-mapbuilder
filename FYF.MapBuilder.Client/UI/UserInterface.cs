@@ -44,16 +44,12 @@ namespace FYF.MapBuilder.Client
             {
                 EnableControlAction(0, key, true);
             }
-
-            OpenState = false;
         }
 
         public void Open()
         {
             nui.SendMessage("open");
             SetNuiFocus(true, true);
-
-            OpenState = true;
         }
     }
 }

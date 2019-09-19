@@ -1,8 +1,9 @@
-﻿using CitizenFX.Core;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
+
+using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
@@ -50,7 +51,7 @@ namespace FYF.MapBuilder.Client
                 //If the current toggle is closed, we should poll it's keys.
                 if (!info.State)
                 {
-                    if (!IsControlJustPressed(0, info.KeyCode) ||
+                    if (!IsControlJustPressed(0, info.KeyCode) &&
                         !IsDisabledControlJustPressed(0, info.KeyCode))
                     {
                         continue;

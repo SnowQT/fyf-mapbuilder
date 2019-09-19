@@ -1,5 +1,5 @@
 import * as React from "react";
-import ObjectListComponent from "./ObjectListComponent.jsx";
+import ObjectBrowser from "./ObjectBrowser.jsx";
 import { ReceiveNuiMessage } from "../helper/NuiHelper.jsx";
 
 class MapBuilderComponent extends React.Component {
@@ -25,7 +25,7 @@ class MapBuilderComponent extends React.Component {
             return null;
         }
 
-        return (<ObjectListComponent />);
+        return (<ObjectBrowser/>);
     }
 }
 

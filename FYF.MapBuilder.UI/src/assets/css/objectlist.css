@@ -1,3 +1,17 @@
 .container {
-    background-color: pink;
+    width: 500px;
+    background-color: rgba(128, 185, 255, 0.66);
+    border: solid 2px rgba(128, 185, 255, 0.88);
+}
+
+.container_inner {
+    padding: 10px;
+}
+
+.title {
+    margin: 10px 0px;
+}
+
+.field {
+   margin: 5px 0px;
 }

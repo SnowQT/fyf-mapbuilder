@@ -33,8 +33,8 @@ export function SendNuiMessage(eventName, data) {
     const payload = JSON.stringify(data);
     const headers =
     {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        "Accept": "application/json",
+        "Content-Type": "application/json",
     }
 
     fetch(endpoint, {

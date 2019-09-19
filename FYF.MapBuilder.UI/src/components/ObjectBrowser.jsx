@@ -1,19 +1,22 @@
 import * as React from "react";
 import { SendNuiMessage } from "../helper/NuiHelper.jsx";
-import JsonObjectsList from "../assets/metadata/objects.json";
+import JsonObjectData from "../assets/metadata/objects.json";
+
 import styles from "../assets/css/objectlist.css"
+import global from "../assets/css/global.css"
 
 class ObjectListItem {
     constructor(name, image, variants, category, tags) {
         this.name = name;
         this.image = image;
         this.variants = variants;
+        this.currentObject = "";
         this.category = category;
         this.tags = tags;
     }
 }
 
-class ObjectListComponent extends React.Component  {
+class ObjectBrowser extends React.Component  {
     constructor(props) {
         super(props);
 
@@ -44,6 +47,10 @@ class ObjectListComponent extends React.Component  {
             objectName += `_${variant}`;
         }
 
+        //Show the current selected objects name.
+        currentSelectedObject.currentObject = objectName;
+        this.setState({ currentSelectedObject: currentSelectedObject });
+
         //Send a message back to the client.
         SendNuiMessage("OnObjectChanged", {
             name: objectName
@@ -53,7 +60,7 @@ class ObjectListComponent extends React.Component  {
     OnObjectSelected(event) {
         //Try finding it in the json file.
         let objectName = event.target.value;
-        let foundObject = JsonObjectsList.find(obj => obj.name === objectName);
+        let foundObject = JsonObjectData.find(obj => obj.name === objectName);
         if (foundObject == undefined) {
             console.log(`Could not find ${objectName} in the object metadata.`)
             return;
@@ -76,14 +83,14 @@ class ObjectListComponent extends React.Component  {
     }
 
     render() {
-        const { currentSelectedObject } = this.state;
+        const currentItem = this.state.currentSelectedObject;
 
         //Map
-        const currentObjectVariantsSelect = currentSelectedObject.variants.map(variant => {
+        const currentObjectVariantsSelect = currentItem.variants.map(variant => {
             return <option key={variant} value={variant}>{variant}</option>
         });
 
-        const listItemsObject = JsonObjectsList.map(obj => {
+        const listItemsObject = JsonObjectData.map(obj => {
             return (
                 <option key={obj.name} value={obj.name}>{obj.name}</option>
             )
@@ -93,25 +100,37 @@ class ObjectListComponent extends React.Component  {
         const CbObjectChanged = this.OnObjectSelected.bind(this);
         const CbObjectVariantChanged = this.OnObjectVariantChanged.bind(this);
 
-
         return (
             <div className={styles.container}>
-                <h3>Objects are awesomest</h3>
-                <select name="objects" onChange={CbObjectChanged} size={this.maxItemsObjects}>
-                    { listItemsObject }
-                </select>
+                <div className={styles.container_inner}>
+                    <h2 className={styles.title}>OBJECT BROWSER</h2>
+                    <h3 className={styles.tltle}>Objects:</h3>
 
-                <h3>Object properties</h3>
-                <div>
-                    <h5>Name: {currentSelectedObject.name}</h5>
-                    <h5>Variants:</h5>
-                    <select name="variants" onChange={CbObjectVariantChanged} size={this.maxItemsVariants}>
-                        { currentObjectVariantsSelect }
+                    <select
+                        name="objects" onChange={CbObjectChanged}
+                        size={this.maxItemsObjects} className={global.w100}
+                    >
+                        { listItemsObject }
                     </select>
+
+                    <h3 className={styles.title}>Properties</h3>
+                    <div>
+                        <h5 className={styles.field}>Name: {currentItem.name}</h5>
+                        <h5 className={styles.field}>Full name: {currentItem.currentObject}</h5>
+                        <h3 className={styles.title}>Variants:</h3>
+
+                        <select
+                            name="variants" onChange={CbObjectVariantChanged}
+                            size={this.maxItemsVariants} className={global.w100}
+                        >
+                            { currentObjectVariantsSelect }
+                        </select>
+
+                    </div>
                 </div>
             </div>
         );
     }
 }
 
-export default ObjectListComponent;
+export default ObjectBrowser;
