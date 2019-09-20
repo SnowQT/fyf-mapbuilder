@@ -1,4 +1,7 @@
-﻿using static CitizenFX.Core.Native.API;
+﻿using CitizenFX.Core;
+using System;
+using System.Collections.Generic;
+using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
@@ -13,13 +16,26 @@ namespace FYF.MapBuilder.Client
             262
         };
 
-        private bool OpenState = false;
+        private IAccessor accessor;
         private NuiHelper nui;
 
         public UserInterface()
         {
+            accessor = MapBuilderClient.Accessor;
+
             nui = new NuiHelper();
             nui.AddToggle(OpenUIKey, "9", Open, Close);
+            nui.AddCallback("Browser_OnObjectChanged", Browser_OnObjectChanged);
+        }
+
+        //@TODO: Can't we just bind this behavior directly to the Builder or BuilderObjectManager?
+        void Browser_OnObjectChanged(dynamic args)
+        {
+            string name = (string)args.name;
+            var locator = accessor.GetLocator();
+            Builder builder = locator.GetService<Builder>();
+
+            builder.BuilderObjectManager.OnObjectChanged(name);
         }
 
         internal void Update()

@@ -1,4 +1,5 @@
-﻿using CitizenFX.Core;
+﻿using System;
+using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
@@ -80,6 +81,11 @@ namespace FYF.MapBuilder.Client
             cameraReference.IsActive = true;
 
             RenderScriptCams(true, true, 1000, false, false);
+        }
+
+        internal Camera GetNativeCamera()
+        {
+            return cameraReference;
         }
 
         public void Destroy()

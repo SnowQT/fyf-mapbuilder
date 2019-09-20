@@ -70,6 +70,11 @@ namespace FYF.MapBuilder.Client
             }
         }
 
+        public Camera GetNativeCamera()
+        {
+            return camera.GetNativeCamera();
+        }
+
         void OnFreecamForward(float reach)
         {
             Vector3 forward = reach * camera.Matrix.Up;

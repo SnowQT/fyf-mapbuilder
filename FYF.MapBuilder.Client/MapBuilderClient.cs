@@ -16,9 +16,13 @@ namespace FYF.MapBuilder.Client
             }
         }
 
+        //@TODO: Should this really be in the main function? Couldn't we subjugate this a specialized class that manages the states?
         private bool IsUserInBuildMode = false;
+        private ServiceLocator locator = new ServiceLocator();
+
         private Freecam freeCam;
         private UserInterface ui;
+        private Builder builder;
 
         public MapBuilderClient()
         {
@@ -34,8 +38,16 @@ namespace FYF.MapBuilder.Client
                 KeySmoothTime = 500,
             };
 
+            //@TODO: Use generic parameter to instantiate these classes. i.e CreateService<T>(params object[] args);
             freeCam = new Freecam(config);
+            locator.RegisterService(freeCam);
+
             ui = new UserInterface();
+            locator.RegisterService(ui);
+
+            builder = new Builder();
+            locator.RegisterService(builder);
+
 
             Tick += OnTick;
 
@@ -97,6 +109,16 @@ namespace FYF.MapBuilder.Client
         public void RegisterEvent(string eventName, Delegate callback)
         {
             EventHandlers.Add(eventName, callback);
+        }
+
+        public ServiceLocator GetLocator()
+        {
+            return locator;
+        }
+
+        public void RegisterTick(Func<Task> tick)
+        {
+            Tick += tick;
         }
 
         #endregion

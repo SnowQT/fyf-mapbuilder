@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
-
+using System.Dynamic;
 using CitizenFX.Core;
+using Newtonsoft.Json;
+
 using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
     internal delegate void NuiToggleFunctions();
+    internal delegate void NuiCallback(dynamic args);
 
     internal class NuiToggleInfo
     {
@@ -72,53 +73,42 @@ namespace FYF.MapBuilder.Client
                     SendMessage("toggleInit", values);
 
                     //Setup the NUI close callback using the unique ID.
-                    SetNuiCallback($"toggleInvoke_{uniqueName}", new Action(() =>
+                    AddCallback($"toggleInvoke_{uniqueName}", (dict) =>
                     {
                         info.CloseFunction();
                         info.State = false;
-                    }));
+                    });
                 }
             }
         }
 
-        public void SetNuiCallback(string eventName, Delegate callback)
+        public void AddCallback(string eventName, NuiCallback callback)
         {
             RegisterNuiCallbackType(eventName);
-            accessor.RegisterEvent($"__cfx_nui:{eventName}", callback);
+
+            //Setup a listener for this event, process JSON when we receive this.
+            accessor.RegisterEvent($"__cfx_nui:{eventName}", 
+                new Action<ExpandoObject>((data) => callback?.Invoke(data))
+            );
         }
 
         public void SendMessage(string type, IDictionary<string, string> values = null)
         {
-            //@TODO: Super hacky, this really should use something like a JSON serializer.... like really... 
-            StringBuilder builder = new StringBuilder();
-            builder.Append("{ \"messageType\": \"");
-            builder.Append(type);
+            IDictionary<string, string> message = new Dictionary<string, string>
+            {
+                { "messageType", type }
+            };
 
             if (values != null && values.Count > 0)
             {
-                builder.Append("\", ");
-
-                foreach (var kv in values)
+                foreach (var val in values)
                 {
-                    builder.Append($"\"{kv.Key}\": \"{kv.Value}\"");
-
-                    //Does not equal the last element in the collection.
-                    if (!kv.Equals(values.Last()))
-                    {
-                        builder.Append(",");
-                    }
+                    message.Add(val.Key, val.Value);
                 }
             }
-            else
-            {
-                builder.Append("\"");
-            }
 
-            builder.Append("}");
-
-
-            Debug.WriteLine(builder.ToString());
-            SendNuiMessage(builder.ToString());
+            string json = JsonConvert.SerializeObject(message);
+            SendNuiMessage(json);
         }
     }
 }

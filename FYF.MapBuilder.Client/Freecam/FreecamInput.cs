@@ -66,7 +66,7 @@ namespace FYF.MapBuilder.Client
     }
 
 
-    //@TODO: Right now we always assume the input group is 0.
+    //@TODO: Right now we always assume the input group is 0. We could solve this by implementing a wrapper for the input system.
     //       Which for some scenarios might not be ideal, but ideal for our intents and purposes.
     internal sealed class FreecamInput
     {
