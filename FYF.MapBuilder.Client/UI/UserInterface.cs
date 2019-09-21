@@ -1,8 +1,4 @@
-﻿using CitizenFX.Core;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using static CitizenFX.Core.Native.API;
+﻿using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
@@ -12,6 +8,9 @@ namespace FYF.MapBuilder.Client
         private readonly Input input;
         private readonly Builder builder;
 
+        //@TODO premature-ui-creation: This ideally should be created when user enters builder mode.
+        //                             Doing this right now will register the toggle and the user will be able
+        //                             to open the builder UI.
         public UserInterface()
         {
             var accessor = MapBuilderClient.Accessor;
@@ -22,8 +21,6 @@ namespace FYF.MapBuilder.Client
             nui = new NuiHelper();
             nui.AddToggle(37, "9", Open, Close);
             nui.AddCallback("Browser_OnObjectChanged", Browser_OnObjectChanged);
-
-            accessor.RegisterTick(UpdateUI);
         }
 
         //@TODO: Can't we just bind this behavior directly to the Builder or BuilderObjectManager?
@@ -31,18 +28,6 @@ namespace FYF.MapBuilder.Client
         {
             string name = (string)args.name;
             builder.BuilderObjectManager.OnObjectChanged(name);
-        }
-
-        internal async Task UpdateUI()
-        {
-            //@HACK #state-manager: Don't rely on a static, move to a state manager
-            bool isInBuildMode = MapBuilderClient.IsUserInBuildMode;
-            if (isInBuildMode)
-            {
-                nui.UpdateToggles();
-            }
-
-            await BaseScript.Delay(1);
         }
 
         public void Close()

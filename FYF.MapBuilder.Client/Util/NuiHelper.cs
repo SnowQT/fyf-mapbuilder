@@ -23,11 +23,15 @@ namespace FYF.MapBuilder.Client
     internal class NuiHelper
     {
         private IAccessor accessor;
+        private readonly Input input;
+
+
         private HashSet<NuiToggleInfo> toggles = new HashSet<NuiToggleInfo>();
 
         public NuiHelper()
         {
             accessor = MapBuilderClient.Accessor;
+            input = accessor.GetLocator().GetService<Input>();
         }
 
         public void AddToggle(int keyCode, string keyName, NuiToggleFunctions openFunc, NuiToggleFunctions closeFunc)
@@ -40,47 +44,77 @@ namespace FYF.MapBuilder.Client
                 CloseFunction = closeFunc
             };
 
+            input.RegisterKey(0, keyCode, InputKeyType.Once, (time) => { HandleToggle(info); });
+
             toggles.Add(info);
         }
 
-        public void UpdateToggles()
+        void HandleToggle(NuiToggleInfo toggle)
         {
-            foreach (NuiToggleInfo info in toggles)
+            //If the current state is closed, we want to open it and request a toggle to the NUI backend.
+            if (!toggle.State)
             {
-                //@TODO: Use an input layer to make this more consistent or something.
-                //          And reducing overhead by not checking for disabled keys.
-                //If the current toggle is closed, we should poll it's keys.
-                if (!info.State)
-                {
-                    if (!IsControlJustPressed(0, info.KeyCode) &&
-                        !IsDisabledControlJustPressed(0, info.KeyCode))
-                    {
-                        continue;
-                    }
-                    
-                    //Open the toggle and set the state accordingly.
-                    info.OpenFunction();
-                    info.State = true;
+                //Open the menu.
+                toggle.OpenFunction();
+                toggle.State = true;
 
-                    //Setup and send the toggleInit information.
-                    string uniqueName = Guid.NewGuid().ToString("n");
-                    var values = new Dictionary<string, string>
+                //Setup a callback for NUI to call us back when the player want to close the UI.
+                string uniqueName = Guid.NewGuid().ToString("n");
+                var values = new Dictionary<string, string>
                     {
                         { "toggleName", uniqueName },
-                        { "toggleKey", info.KeyName }
+                        { "toggleKey", toggle.KeyName }
                     };
 
-                    SendMessage("toggleInit", values);
+                SendMessage("toggleInit", values);
 
-                    //Setup the NUI close callback using the unique ID.
-                    AddCallback($"toggleInvoke_{uniqueName}", (dict) =>
-                    {
-                        info.CloseFunction();
-                        info.State = false;
-                    });
-                }
+                //Listen for when the user wants to close the UI.
+                AddCallback($"toggleInvoke_{uniqueName}", (dict) =>
+                {
+                    toggle.CloseFunction();
+                    toggle.State = false;
+                });
             }
         }
+
+        //public void UpdateToggles()
+        //{
+        //    foreach (NuiToggleInfo info in toggles)
+        //    {
+        //        //@TODO: Use an input layer to make this more consistent or something.
+        //        //          And reducing overhead by not checking for disabled keys.
+        //        //If the current toggle is closed, we should poll it's keys.
+        //        if (!info.State)
+        //        {
+        //            if (!IsControlJustPressed(0, info.KeyCode) &&
+        //                !IsDisabledControlJustPressed(0, info.KeyCode))
+        //            {
+        //                continue;
+        //            }
+                    
+        //            //Open the toggle and set the state accordingly.
+        //            info.OpenFunction();
+        //            info.State = true;
+
+        //            //Setup and send the toggleInit information.
+        //            string uniqueName = Guid.NewGuid().ToString("n");
+        //            var values = new Dictionary<string, string>
+        //            {
+        //                { "toggleName", uniqueName },
+        //                { "toggleKey", info.KeyName }
+        //            };
+
+        //            SendMessage("toggleInit", values);
+
+        //            //Setup the NUI close callback using the unique ID.
+        //            AddCallback($"toggleInvoke_{uniqueName}", (dict) =>
+        //            {
+        //                info.CloseFunction();
+        //                info.State = false;
+        //            });
+        //        }
+        //    }
+        //}
 
         public void AddCallback(string eventName, NuiCallback callback)
         {

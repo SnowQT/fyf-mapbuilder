@@ -124,20 +124,15 @@ namespace FYF.MapBuilder.Client
 
     internal class Input
     {
-        const int KeyPollTimeMilliseconds = 100;
-        const int KeyPollContiguousTimeMilliseconds = 1;
-
         private readonly List<InputKeyState> keyStates = new List<InputKeyState>();
         private readonly HashSet<InputMouseCallback> mouseCallbacks = new HashSet<InputMouseCallback>();
 
         public Input()
         {
             IAccessor accessor = MapBuilderClient.Accessor;
-
             accessor.RegisterTick(Update);
-            accessor.RegisterTick(UpdateKeysOnce);
-            accessor.RegisterTick(UpdateKeysContiguous);
             accessor.RegisterTick(UpdateMouse);
+
         }
 
         public InputKeyState RegisterKey(int keyGroup, int keyCode, InputKeyType type)
@@ -202,6 +197,10 @@ namespace FYF.MapBuilder.Client
         {
             foreach (InputKeyState state in keyStates)
             {
+                //Update the key states
+                state.Update();
+
+                //Update any keys that are disabled.
                 if (state.IsDisabled)
                 {
                     DisableControlAction(state.KeyGroup, state.KeyCode, true);
@@ -211,35 +210,9 @@ namespace FYF.MapBuilder.Client
             await BaseScript.Delay(0);
         }
 
-        public async Task UpdateKeysOnce()
+        async Task UpdateMouse()
         {
-            foreach (InputKeyState state in keyStates)
-            {
-                if (state.KeyType == InputKeyType.Once)
-                {
-                    state.Update();
-                }
-            }
-
-            await BaseScript.Delay(KeyPollTimeMilliseconds);
-        }
-
-        public async Task UpdateKeysContiguous()
-        {
-            foreach (InputKeyState state in keyStates)
-            {
-                if (state.KeyType == InputKeyType.Continuous)
-                {
-                    state.Update();
-                }
-            }
-
-            await BaseScript.Delay(KeyPollContiguousTimeMilliseconds);
-        }
-
-        public async Task UpdateMouse()
-        {
-            const float mouseEpsilon = 0.0001f;
+            const float mouseEpsilon = 0.001f;
 
             if (mouseCallbacks.Count == 0)
             {
@@ -249,7 +222,7 @@ namespace FYF.MapBuilder.Client
             float mx = -GetControlNormal(0, 2);
             float my = -GetControlNormal(0, 1);
 
-            if (Math.Abs(mx) < mouseEpsilon && 
+            if (Math.Abs(mx) < mouseEpsilon &&
                 Math.Abs(my) < mouseEpsilon)
             {
                 return;
@@ -264,7 +237,6 @@ namespace FYF.MapBuilder.Client
 
             await Task.FromResult(0);
         }
-
 
         bool FindKeyState(int keyGroup, int keyCode, out InputKeyState outState)
         {
