@@ -7,5 +7,9 @@ files {
 }
 
 ui_page "nui/index.html"
-client_script "FYF.MapBuilder.Client.net.dll"
+
+client_script {
+    "Newtonsoft.Json.dll",
+    "FYF.MapBuilder.Client.net.dll"
+}
 server_script "FYF.MapBuilder.Server.net.dll"

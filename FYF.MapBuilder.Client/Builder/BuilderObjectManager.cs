@@ -27,7 +27,6 @@ namespace FYF.MapBuilder.Client
         {
             if (!isPropLoaded)
             {
-                Debug.WriteLine("Needs to load new prop!");
                 await SetNewCurrentProp();
             }
 
@@ -71,13 +70,10 @@ namespace FYF.MapBuilder.Client
 
             currentProp = prop;
             isPropLoaded = true;
-
-            Debug.WriteLine("Switched to prop " + currentProp.Model.Hash);
         }
 
         public void OnObjectChanged(string objectName)
         {
-            Debug.WriteLine("OnObjectChanged to " + objectName);
             modelToLoad = new Model(objectName);
             isPropLoaded = false;
         }

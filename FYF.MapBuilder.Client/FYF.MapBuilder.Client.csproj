@@ -49,7 +49,7 @@
     <Compile Include="Builder\BuilderObjectManager.cs" />
     <Compile Include="Freecam\Freecam.cs" />
     <Compile Include="Freecam\FreecamCamera.cs" />
-    <Compile Include="Freecam\FreecamInput.cs" />
+    <Compile Include="Input\Input.cs" />
     <Compile Include="MapBuilderClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UserInterface.cs" />

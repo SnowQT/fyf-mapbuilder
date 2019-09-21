@@ -35,7 +35,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="src\components\MapBuilderComponent.jsx" />
-    <Compile Include="src\components\ObjectListComponent.jsx" />
+    <Compile Include="src\components\ObjectBrowser.jsx" />
     <Compile Include="src\helper\NuiHelper.jsx" />
     <Compile Include="src\Main.jsx" />
     <Compile Include="webpack-config.js">

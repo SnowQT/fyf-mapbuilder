@@ -1,4 +1,4 @@
-﻿/// <binding AfterBuild='deploy' />
+﻿/// <binding BeforeBuild='deploy' />
 
 const gulp = require("gulp");
 const wp = require("webpack")
@@ -57,7 +57,7 @@ gulp.task("live", () => {
     });
 
     //Watch for changes in the style sheets.
-    //@TODO: Possibility to use bs.stream, might overcome the building overhead of webpack.
+    //@COULD: Possibility to use bs.stream, might overcome the building overhead of webpack.
     gulp.watch("src/assets/**/*.css").on("change", () => {
         wp(wpconfig).run(() => {
             bs.reload();

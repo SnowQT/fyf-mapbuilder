@@ -20,6 +20,7 @@ namespace FYF.MapBuilder.Client
         private bool IsUserInBuildMode = false;
         private ServiceLocator locator = new ServiceLocator();
 
+        private Input input;
         private Freecam freeCam;
         private UserInterface ui;
         private Builder builder;
@@ -37,6 +38,9 @@ namespace FYF.MapBuilder.Client
                 RotationBase = 500.0f,
                 KeySmoothTime = 500,
             };
+
+            input = new Input();
+            locator.RegisterService(input);
 
             //@TODO: Use generic parameter to instantiate these classes. i.e CreateService<T>(params object[] args);
             freeCam = new Freecam(config);
@@ -58,6 +62,7 @@ namespace FYF.MapBuilder.Client
         {
             if (IsUserInBuildMode)
             {
+                //@TODO: This should use the RegisterTick from IAccessor.
                 freeCam.Update();
                 ui.Update();
             }

@@ -77,6 +77,7 @@ namespace FYF.MapBuilder.Client
 
             cameraReference.Position = new Vector3(0.0f, 0.0f, 200.0f);
             cameraReference.Rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            cameraReference.NearClip = 0.0001f;
             cameraReference.FieldOfView = self.Config.FieldOfView;
             cameraReference.IsActive = true;
 

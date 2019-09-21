@@ -1,11 +1,11 @@
 .container {
     width: 500px;
-    background-color: rgba(128, 185, 255, 0.5);
-    border: solid 2px rgba(128, 185, 255, 0.8);
+    background-color: rgba(128, 185, 255, 0.66);
+    border: solid 2px rgba(128, 185, 255, 0.88);
 }
 
 .container_inner {
-    padding: 20px;
+    padding: 10px;
 }
 
 .title {

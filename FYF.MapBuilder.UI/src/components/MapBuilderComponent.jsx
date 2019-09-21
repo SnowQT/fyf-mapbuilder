@@ -5,7 +5,7 @@ import { ReceiveNuiMessage } from "../helper/NuiHelper.jsx";
 class MapBuilderComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { isOpened: true }
+        this.state = { isOpened: false }
     }
 
     componentDidMount() {

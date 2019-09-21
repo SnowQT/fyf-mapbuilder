@@ -21,26 +21,26 @@ namespace FYF.MapBuilder.Client
     {
         public FreecamConfig Config { get; private set; }
         
-        private FreecamInput input;
+        private Input input;
         private FreecamCamera camera;
-
-        private Vector3 movementVector = Vector3.Zero;
-        private Vector3 rotationVector = Vector3.Zero;
 
         public Freecam(FreecamConfig config)
         {
+            IAccessor accessor = MapBuilderClient.Accessor;
+            ServiceLocator locator = accessor.GetLocator();
+
             Config = config;
 
+            input = locator.GetService<Input>();
             camera = new FreecamCamera(this);
 
-            input = new FreecamInput(this);
-            input.BindKey(FreecamKeys.Forward, OnFreecamForward);
-            input.BindKey(FreecamKeys.Backwards, OnFreecamBackwards);
-            input.BindKey(FreecamKeys.Left, OnFreecamLeft);
-            input.BindKey(FreecamKeys.Right, OnFreecamRight);
-            input.BindKey(FreecamKeys.Up, OnFreecamDown);
-            input.BindKey(FreecamKeys.Down, OnFreecamUp);
-            input.BindMouse(OnFreecamMouseMove);
+            input.RegisterKey(0, 32, InputKeyType.Continuous, OnFreecamForward);
+            input.RegisterKey(0, 33, InputKeyType.Continuous, OnFreecamBackwards);
+            input.RegisterKey(0, 34, InputKeyType.Continuous, OnFreecamLeft);
+            input.RegisterKey(0, 35, InputKeyType.Continuous, OnFreecamRight);
+            input.RegisterKey(0, 52, InputKeyType.Continuous, OnFreecamDown);
+            input.RegisterKey(0, 54, InputKeyType.Continuous, OnFreecamUp);
+            input.RegisterMouse(OnFreecamMouseMove);
         }
 
         public void EnableFreecam()
@@ -62,9 +62,6 @@ namespace FYF.MapBuilder.Client
             //Check if the camera is valid.
             if (camera.IsValid)
             {
-                input.PollKeys();
-                input.PollMouse();
-
                 camera.Update();
                 Focus.Set(camera.Position, camera.Rotation);
             }
@@ -75,40 +72,45 @@ namespace FYF.MapBuilder.Client
             return camera.GetNativeCamera();
         }
 
-        void OnFreecamForward(float reach)
+        void OnFreecamForward(int time)
         {
-            Vector3 forward = reach * camera.Matrix.Up;
+            Vector3 forward = GetSmoothedKeyInput(time) * camera.Matrix.Up;
             camera.SetRelativePosition(forward);
         }
 
-        void OnFreecamBackwards(float reach)
+        void OnFreecamBackwards(int time)
         {
-            Vector3 backwards = reach * camera.Matrix.Down;
+            Vector3 backwards = GetSmoothedKeyInput(time) * camera.Matrix.Down;
             camera.SetRelativePosition(backwards);
         }
 
-        void OnFreecamRight(float reach)
+        void OnFreecamRight(int time)
         {
-            Vector3 right = reach * camera.Matrix.Right;
+            Vector3 right = GetSmoothedKeyInput(time) * camera.Matrix.Right;
             camera.SetRelativePosition(right);
         }
 
-        void OnFreecamLeft(float reach)
+        void OnFreecamLeft(int time)
         {
-            Vector3 left = reach * camera.Matrix.Left;
+            Vector3 left = GetSmoothedKeyInput(time) * camera.Matrix.Left;
             camera.SetRelativePosition(left);
         }
 
-        void OnFreecamUp(float reach)
+        void OnFreecamUp(int time)
         {
-            Vector3 up = reach * camera.Matrix.Forward;
+            Vector3 up = GetSmoothedKeyInput(time) * camera.Matrix.Forward;
             camera.SetRelativePosition(up);
         }
 
-        void OnFreecamDown(float reach)
+        void OnFreecamDown(int time)
         {
-            Vector3 down = reach * camera.Matrix.Backward;
+            Vector3 down = GetSmoothedKeyInput(time) * camera.Matrix.Backward;
             camera.SetRelativePosition(down);
+        }
+
+        float GetSmoothedKeyInput(int input)
+        {
+            return MathUtil.Clamp((float)input / (float)Config.KeySmoothTime, 0.01f, 1.0f);
         }
 
         private void OnFreecamMouseMove(Vector2 rotation)
@@ -119,7 +121,6 @@ namespace FYF.MapBuilder.Client
         //@TODO: This should be some util function, same for unfreeze player.
         private void FreezePlayerPed()
         {
-            int playerId = PlayerId();
             int playerPedId = PlayerPedId();
 
             Ped playerPed = new Ped(playerPedId);
@@ -137,7 +138,6 @@ namespace FYF.MapBuilder.Client
 
         private void UnfreezePlayerPed()
         {
-            int playerId = PlayerId();
             int playerPedId = PlayerPedId();
 
             //Unfreeze the player ped entity.

@@ -52,7 +52,7 @@ class ObjectBrowser extends React.Component  {
         this.setState({ currentSelectedObject: currentSelectedObject });
 
         //Send a message back to the client.
-        SendNuiMessage("OnObjectChanged", {
+        SendNuiMessage("Browser_OnObjectChanged", {
             name: objectName
         });
     }
