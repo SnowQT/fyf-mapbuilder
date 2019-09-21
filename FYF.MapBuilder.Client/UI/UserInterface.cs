@@ -8,7 +8,7 @@ namespace FYF.MapBuilder.Client
         private readonly Input input;
         private readonly Builder builder;
 
-        //@TODO premature-ui-creation: This ideally should be created when user enters builder mode.
+        //@TODO #premature-ui-creation: This ideally should be created when user enters builder mode.
         //                             Doing this right now will register the toggle and the user will be able
         //                             to open the builder UI.
         public UserInterface()
@@ -16,6 +16,7 @@ namespace FYF.MapBuilder.Client
             var accessor = MapBuilderClient.Accessor;
             var locator = accessor.GetLocator();
 
+            //@TODO: Builder doesn't exist when UserInterface is created, should be solved by implementing #wait-for-creation-service.
             builder = locator.GetService<Builder>();
 
             nui = new NuiHelper();

@@ -74,6 +74,8 @@ namespace FYF.MapBuilder.Client
 
         public void OnObjectChanged(string objectName)
         {
+            Debug.WriteLine("New model: " + objectName);
+
             modelToLoad = new Model(objectName);
             isPropLoaded = false;
         }

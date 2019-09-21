@@ -77,45 +77,6 @@ namespace FYF.MapBuilder.Client
             }
         }
 
-        //public void UpdateToggles()
-        //{
-        //    foreach (NuiToggleInfo info in toggles)
-        //    {
-        //        //@TODO: Use an input layer to make this more consistent or something.
-        //        //          And reducing overhead by not checking for disabled keys.
-        //        //If the current toggle is closed, we should poll it's keys.
-        //        if (!info.State)
-        //        {
-        //            if (!IsControlJustPressed(0, info.KeyCode) &&
-        //                !IsDisabledControlJustPressed(0, info.KeyCode))
-        //            {
-        //                continue;
-        //            }
-                    
-        //            //Open the toggle and set the state accordingly.
-        //            info.OpenFunction();
-        //            info.State = true;
-
-        //            //Setup and send the toggleInit information.
-        //            string uniqueName = Guid.NewGuid().ToString("n");
-        //            var values = new Dictionary<string, string>
-        //            {
-        //                { "toggleName", uniqueName },
-        //                { "toggleKey", info.KeyName }
-        //            };
-
-        //            SendMessage("toggleInit", values);
-
-        //            //Setup the NUI close callback using the unique ID.
-        //            AddCallback($"toggleInvoke_{uniqueName}", (dict) =>
-        //            {
-        //                info.CloseFunction();
-        //                info.State = false;
-        //            });
-        //        }
-        //    }
-        //}
-
         public void AddCallback(string eventName, NuiCallback callback)
         {
             RegisterNuiCallbackType(eventName);

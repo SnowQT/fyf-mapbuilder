@@ -19,7 +19,7 @@ namespace FYF.MapBuilder.Client
             services.Add(typeof(T), instance);
         }
 
-        //@TODO: Possible "wait for it to exist" + timeout thing to avoid race conditions. 
+        //@TODO #wait-for-creation-service: Possible "wait for it to exist" + timeout thing to avoid race conditions. 
         public T GetService<T>() where T : class
         {
             bool foundService = services.TryGetValue(typeof(T), out dynamic service);
