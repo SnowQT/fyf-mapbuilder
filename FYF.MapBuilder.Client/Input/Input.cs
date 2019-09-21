@@ -24,15 +24,34 @@ namespace FYF.MapBuilder.Client
         public InputKeyType KeyType;
         public bool PressedState;
         public int TimePressed;
-        public bool Disabled;
         public HashSet<InputKeyCallback> Callbacks;
+
+        private bool isDisabled;
+        public bool IsDisabled
+        {
+            get
+            {
+                return isDisabled;
+            }
+
+            set
+            {
+                isDisabled = value;
+
+                //Reset the key from being disabled.
+                if (isDisabled == false)
+                {
+                    EnableControlAction(KeyGroup, KeyCode, true);
+                }
+            }
+        }
 
         public InputKeyState(int keyGroup, int keyCode, InputKeyType keyType, bool disabled)
         {
             KeyGroup = keyGroup;
             KeyCode = keyCode;
             KeyType = keyType;
-            Disabled = disabled;
+            IsDisabled = disabled;
             TimePressed = -1;
             Callbacks = new HashSet<InputKeyCallback>();
         }
@@ -48,7 +67,7 @@ namespace FYF.MapBuilder.Client
 
             //@TODO: A cleaner way to do this would be nice.
             //Determine which function to use for the pressed keys.
-            if (Disabled && KeyType == InputKeyType.Once)
+            if (IsDisabled && KeyType == InputKeyType.Once)
             {
                 switch (KeyType)
                 {
@@ -115,8 +134,9 @@ namespace FYF.MapBuilder.Client
         {
             IAccessor accessor = MapBuilderClient.Accessor;
 
-            accessor.RegisterTick(UpdateOnce);
-            accessor.RegisterTick(UpdateContiguous);
+            accessor.RegisterTick(Update);
+            accessor.RegisterTick(UpdateKeysOnce);
+            accessor.RegisterTick(UpdateKeysContiguous);
             accessor.RegisterTick(UpdateMouse);
         }
 
@@ -152,11 +172,9 @@ namespace FYF.MapBuilder.Client
         {
             if (FindKeyState(keyGroup, keyCode, out InputKeyState state))
             {
-                //Avoid unnecessary invocation of GTA 5 natives.
-                if (!state.Disabled)
+                if (!state.IsDisabled)
                 {
-                    DisableControlAction(keyGroup, keyCode, true);
-                    state.Disabled = true;
+                    state.IsDisabled = true;
                 }
             }
             else
@@ -169,10 +187,9 @@ namespace FYF.MapBuilder.Client
         {
             if (FindKeyState(keyGroup, keyCode, out InputKeyState state))
             {
-                if (state.Disabled)
+                if (state.IsDisabled)
                 {
-                    EnableControlAction(keyGroup, keyCode, true);
-                    state.Disabled = false;
+                    state.IsDisabled = false;
                 }
             }
             else
@@ -181,7 +198,20 @@ namespace FYF.MapBuilder.Client
             }
         }
 
-        public async Task UpdateOnce()
+        public async Task Update()
+        {
+            foreach (InputKeyState state in keyStates)
+            {
+                if (state.IsDisabled)
+                {
+                    DisableControlAction(state.KeyGroup, state.KeyCode, true);
+                }
+            }
+
+            await BaseScript.Delay(0);
+        }
+
+        public async Task UpdateKeysOnce()
         {
             foreach (InputKeyState state in keyStates)
             {
@@ -194,7 +224,7 @@ namespace FYF.MapBuilder.Client
             await BaseScript.Delay(KeyPollTimeMilliseconds);
         }
 
-        public async Task UpdateContiguous()
+        public async Task UpdateKeysContiguous()
         {
             foreach (InputKeyState state in keyStates)
             {

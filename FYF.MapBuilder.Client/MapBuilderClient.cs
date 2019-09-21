@@ -16,8 +16,9 @@ namespace FYF.MapBuilder.Client
             }
         }
 
-        //@TODO: Should this really be in the main function? Couldn't we subjugate this a specialized class that manages the states?
-        private bool IsUserInBuildMode = false;
+        //@TODO #move-toggle-to-class: Should this really be in the main function? Couldn't we subjugate this a specialized class that manages the states?
+        //@TODO #state-manager: Possible make use of a state manager that we can call from the service locator. So this doesn't need to be static.
+        public static bool IsUserInBuildMode = false;
         private ServiceLocator locator = new ServiceLocator();
 
         private Input input;
@@ -47,6 +48,12 @@ namespace FYF.MapBuilder.Client
             locator.RegisterService(freeCam);
 
             ui = new UserInterface();
+
+            //@TODO: Move this to #move-toggle-to-class.
+            input.RegisterKey(0, 37, InputKeyType.Once);
+            input.RegisterKey(0, 261, InputKeyType.Once);
+            input.RegisterKey(0, 262, InputKeyType.Once);
+
             locator.RegisterService(ui);
 
             builder = new Builder();
@@ -64,7 +71,6 @@ namespace FYF.MapBuilder.Client
             {
                 //@TODO: This should use the RegisterTick from IAccessor.
                 freeCam.Update();
-                ui.Update();
             }
 
             await Task.FromResult(0);
@@ -78,11 +84,21 @@ namespace FYF.MapBuilder.Client
                 freeCam.DisableFreecam();
                 ui.Close();
 
+                input.EnableKey(0, 37);
+                input.EnableKey(0, 261);
+                input.EnableKey(0, 262);
+
                 IsUserInBuildMode = false;
+
             }
             else
             {
                 freeCam.EnableFreecam();
+
+                input.DisableKey(0, 37);
+                input.DisableKey(0, 261);
+                input.DisableKey(0, 262);
+
                 IsUserInBuildMode = true;
             }
         }

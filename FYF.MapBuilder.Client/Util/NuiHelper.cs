@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using CitizenFX.Core;
+
 using Newtonsoft.Json;
 
 using static CitizenFX.Core.Native.API;
