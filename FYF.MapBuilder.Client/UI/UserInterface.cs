@@ -1,5 +1,4 @@
-﻿using CitizenFX.Core;
-using static CitizenFX.Core.Native.API;
+﻿using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {

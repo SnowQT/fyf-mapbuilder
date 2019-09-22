@@ -9,7 +9,6 @@ namespace FYF.MapBuilder.Client
         public Builder()
         {
             BuilderObjectManager = new BuilderObjectManager();
-            Debug.WriteLine("Yeah why? I exist!");
         }
     }
 }
