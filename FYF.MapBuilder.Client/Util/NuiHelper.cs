@@ -23,15 +23,16 @@ namespace FYF.MapBuilder.Client
     internal class NuiHelper
     {
         private IAccessor accessor;
-        private readonly Input input;
-
+        private readonly ServiceReference<Input> inputRef;
 
         private HashSet<NuiToggleInfo> toggles = new HashSet<NuiToggleInfo>();
 
         public NuiHelper()
         {
             accessor = MapBuilderClient.Accessor;
-            input = accessor.GetLocator().GetService<Input>();
+            var locator = MapBuilderClient.Locator;
+
+            inputRef = locator.GetServiceReference<Input>();
         }
 
         public void AddToggle(int keyCode, string keyName, NuiToggleFunctions openFunc, NuiToggleFunctions closeFunc)
@@ -44,7 +45,10 @@ namespace FYF.MapBuilder.Client
                 CloseFunction = closeFunc
             };
 
-            input.RegisterKey(0, keyCode, InputKeyType.Once, (time) => { HandleToggle(info); });
+            inputRef.Get().RegisterKey(0, keyCode, InputKeyType.Once, (time) => 
+            {
+                HandleToggle(info);
+            });
 
             toggles.Add(info);
         }

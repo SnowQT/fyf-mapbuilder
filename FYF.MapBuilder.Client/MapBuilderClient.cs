@@ -16,10 +16,16 @@ namespace FYF.MapBuilder.Client
             }
         }
 
-        //@TODO #move-toggle-to-class: Should this really be in the main function? Couldn't we subjugate this a specialized class that manages the states?
+        private static ServiceLocator locator = new ServiceLocator();
+        public static ServiceLocator Locator
+        {
+            get { return locator; }
+            set { locator = value; }
+        }
+
+        //@TODO #state-manager: Should this really be in the main function? Couldn't we subjugate this a specialized class that manages the states?
         //@TODO #state-manager: Possible make use of a state manager that we can call from the service locator. So this doesn't need to be static.
         public static bool IsUserInBuildMode = false;
-        private ServiceLocator locator = new ServiceLocator();
 
         private Input input;
         private Freecam freeCam;
@@ -40,25 +46,15 @@ namespace FYF.MapBuilder.Client
                 KeySmoothTime = 500,
             };
 
-            input = new Input();
-            locator.RegisterService(input);
-
-            //@TODO: Use generic parameter to instantiate these classes. i.e CreateService<T>(params object[] args);
-            freeCam = new Freecam(config);
-            locator.RegisterService(freeCam);
-
-            ui = new UserInterface();
-
+            input = locator.CreateService<Input>();
             //@TODO: Move this to #move-toggle-to-class.
             input.RegisterKey(0, 37, InputKeyType.Once);
             input.RegisterKey(0, 261, InputKeyType.Once);
             input.RegisterKey(0, 262, InputKeyType.Once);
 
-            locator.RegisterService(ui);
-
-            builder = new Builder();
-            locator.RegisterService(builder);
-
+            freeCam = locator.CreateService<Freecam>(config);
+            ui = locator.CreateService<UserInterface>();
+            builder = locator.CreateService<Builder>();
 
             Tick += OnTick;
 
@@ -121,7 +117,6 @@ namespace FYF.MapBuilder.Client
                 {
                     ui.Close();
                 }
-
             }
         }
 

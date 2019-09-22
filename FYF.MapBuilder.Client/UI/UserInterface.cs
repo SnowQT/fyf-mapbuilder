@@ -1,12 +1,12 @@
-﻿using static CitizenFX.Core.Native.API;
+﻿using CitizenFX.Core;
+using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
     internal class UserInterface
     {
         private readonly NuiHelper nui;
-        private readonly Input input;
-        private readonly Builder builder;
+        private readonly ServiceReference<Builder> builderRef;
 
         //@TODO #premature-ui-creation: This ideally should be created when user enters builder mode.
         //                             Doing this right now will register the toggle and the user will be able
@@ -14,10 +14,9 @@ namespace FYF.MapBuilder.Client
         public UserInterface()
         {
             var accessor = MapBuilderClient.Accessor;
-            var locator = accessor.GetLocator();
+            var locator = MapBuilderClient.Locator;
 
-            //@TODO: Builder doesn't exist when UserInterface is created, should be solved by implementing #wait-for-creation-service.
-            builder = locator.GetService<Builder>();
+            builderRef = locator.GetServiceReference<Builder>();
 
             nui = new NuiHelper();
             nui.AddToggle(37, "9", Open, Close);
@@ -28,6 +27,8 @@ namespace FYF.MapBuilder.Client
         void Browser_OnObjectChanged(dynamic args)
         {
             string name = (string)args.name;
+
+            Builder builder = builderRef.Get();
             builder.BuilderObjectManager.OnObjectChanged(name);
         }
 

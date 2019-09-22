@@ -7,7 +7,7 @@ namespace FYF.MapBuilder.Client
 {
     internal class BuilderObjectManager
     {
-        private readonly Freecam camera;
+        private readonly ServiceReference<Freecam> camera;
 
         private Prop currentProp = null;
         private bool isPropLoaded = true;
@@ -16,9 +16,10 @@ namespace FYF.MapBuilder.Client
 
         public BuilderObjectManager()
         {
-            IAccessor accessor = MapBuilderClient.Accessor;
-            ServiceLocator locator = accessor.GetLocator();
-            camera = locator.GetService<Freecam>();
+            var accessor = MapBuilderClient.Accessor;
+            var locator = MapBuilderClient.Locator;
+
+            camera = locator.GetServiceReference<Freecam>();
 
             accessor.RegisterTick(OnTick);
         }
@@ -51,8 +52,9 @@ namespace FYF.MapBuilder.Client
                 await modelToLoad.Request(500);
             }
 
-            Vector3 camPos = camera.GetNativeCamera().Position;
-            Vector3 camForwardDir = camera.GetNativeCamera().Matrix.Up;
+            Camera freecamNative = camera.Get()?.GetNativeCamera();
+            Vector3 camPos = freecamNative.Position;
+            Vector3 camForwardDir = freecamNative.Matrix.Up;
 
             const float sizeMax = 200.0f;
             const float dropoffCoeff = 200.0f;
@@ -64,7 +66,7 @@ namespace FYF.MapBuilder.Client
             float distance = 1.0f - (dropoffToX - (1.0f / dropoffCoeff));
 
             Vector3 propPos = camPos + (camForwardDir * 33.3f * distance);
-            Vector3 propRot = new Vector3(0.0f, 0.0f, camera.GetNativeCamera().Rotation.Z);
+            Vector3 propRot = new Vector3(0.0f, 0.0f, freecamNative.Rotation.Z);
 
             Prop prop = await World.CreateProp(modelToLoad, propPos, propRot, false, false);
 

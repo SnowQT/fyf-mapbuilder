@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using CitizenFX.Core;
+﻿using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
@@ -17,23 +15,21 @@ namespace FYF.MapBuilder.Client
         public int KeySmoothTime;
     }
 
+    //@TODO: #freecam-tick-accessor: Freecam should use the RegisterTick from the IAccessor class.
     internal sealed class Freecam
     {
         public FreecamConfig Config { get; private set; }
         
-        private Input input;
         private FreecamCamera camera;
 
         public Freecam(FreecamConfig config)
         {
-            IAccessor accessor = MapBuilderClient.Accessor;
-            ServiceLocator locator = accessor.GetLocator();
+            var accessor = MapBuilderClient.Accessor;
+            var locator = MapBuilderClient.Locator;
 
             Config = config;
 
-            input = locator.GetService<Input>();
-            camera = new FreecamCamera(this);
-
+            var input = locator.GetServiceReference<Input>().Get();
             input.RegisterKey(0, 32, InputKeyType.Continuous, OnFreecamForward);
             input.RegisterKey(0, 33, InputKeyType.Continuous, OnFreecamBackwards);
             input.RegisterKey(0, 34, InputKeyType.Continuous, OnFreecamLeft);
@@ -41,6 +37,8 @@ namespace FYF.MapBuilder.Client
             input.RegisterKey(0, 52, InputKeyType.Continuous, OnFreecamDown);
             input.RegisterKey(0, 54, InputKeyType.Continuous, OnFreecamUp);
             input.RegisterMouse(OnFreecamMouseMove);
+
+            camera = new FreecamCamera(this);
         }
 
         public void EnableFreecam()

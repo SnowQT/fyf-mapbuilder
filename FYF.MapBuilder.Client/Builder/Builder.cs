@@ -1,4 +1,6 @@
-﻿namespace FYF.MapBuilder.Client
+﻿using CitizenFX.Core;
+
+namespace FYF.MapBuilder.Client
 {
     internal class Builder
     {
@@ -7,6 +9,7 @@
         public Builder()
         {
             BuilderObjectManager = new BuilderObjectManager();
+            Debug.WriteLine("Yeah why? I exist!");
         }
     }
 }
