@@ -57,6 +57,7 @@
     <Compile Include="Util\Focus.cs" />
     <Compile Include="Util\Locator\ServiceLocator.cs" />
     <Compile Include="Util\NuiHelper.cs" />
+    <Compile Include="Util\PlayerHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

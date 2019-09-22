@@ -7,7 +7,7 @@ namespace FYF.MapBuilder.Client
         private readonly NuiHelper nui;
         private readonly ServiceReference<Builder> builderRef;
 
-        //@TODO #premature-ui-creation: This ideally should be created when user enters builder mode.
+        //@TODO(bma) #state-manager: This ideally should be created when user enters builder mode.
         //                             Doing this right now will register the toggle and the user will be able
         //                             to open the builder UI.
         public UserInterface()
@@ -22,7 +22,7 @@ namespace FYF.MapBuilder.Client
             nui.AddCallback("Browser_OnObjectChanged", Browser_OnObjectChanged);
         }
 
-        //@TODO: Can't we just bind this behavior directly to the Builder or BuilderObjectManager?
+        //@TODO(bma) #broadcast: These callbacks should not be in the User Interface, would be nice if we could broadcast a message across the entire domain.
         void Browser_OnObjectChanged(dynamic args)
         {
             string name = (string)args.name;

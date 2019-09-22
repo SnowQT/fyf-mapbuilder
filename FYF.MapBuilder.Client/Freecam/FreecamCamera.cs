@@ -100,6 +100,7 @@ namespace FYF.MapBuilder.Client
             RenderScriptCams(false, true, 1000, false, false);
         }
 
+        //@TODO(bma): #freecam-stutter: Use linear interpolation to fill in frames between receiving input and not.
         public void Update()
         {
             //Apply the position of the camera.

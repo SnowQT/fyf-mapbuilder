@@ -1,15 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
-using System;
+using System.Linq;
 
 namespace FYF.MapBuilder.Client
 {
     internal delegate void InputKeyCallback(int pressedTime);
     internal delegate void InputMouseCallback(Vector2 mouseDelta);
-    //internal delegate void InputMouseButtonCallback
 
     internal enum InputKeyType
     {
@@ -19,6 +19,15 @@ namespace FYF.MapBuilder.Client
 
     internal class InputKeyState
     {
+        IDictionary<bool[], Func<int, int, bool>> KeyPressFuncMap = new Dictionary<bool[], Func<int, int, bool>>
+        {
+            //Left = Continuous or not, Right = disabled or not.
+            { new bool[] { true, false}, IsControlPressed },
+            { new bool[] { false, false}, IsControlJustPressed },
+            { new bool[] { true, true}, IsDisabledControlPressed },
+            { new bool[] { false, true}, IsDisabledControlJustPressed },
+        };
+
         public int KeyGroup;
         public int KeyCode;
         public InputKeyType KeyType;
@@ -26,6 +35,7 @@ namespace FYF.MapBuilder.Client
         public int TimePressed;
         public HashSet<InputKeyCallback> Callbacks;
 
+        private Func<int, int, bool> KeyMethod;
         private bool isDisabled;
         public bool IsDisabled
         {
@@ -37,6 +47,9 @@ namespace FYF.MapBuilder.Client
             set
             {
                 isDisabled = value;
+
+                //Update the method the keypress should use.
+                UpdateKeyMethod();
 
                 //Reset the key from being disabled.
                 if (isDisabled == false)
@@ -63,34 +76,7 @@ namespace FYF.MapBuilder.Client
 
         public bool Update()
         {
-            bool isPressed = false;
-
-            //@TODO: A cleaner way to do this would be nice.
-            //Determine which function to use for the pressed keys.
-            if (IsDisabled && KeyType == InputKeyType.Once)
-            {
-                switch (KeyType)
-                {
-                    case InputKeyType.Once:
-                        isPressed = IsDisabledControlJustPressed(KeyGroup, KeyCode);
-                        break;
-                    case InputKeyType.Continuous:
-                        isPressed = IsDisabledControlPressed(KeyGroup, KeyCode);
-                        break;
-                }
-            }
-            else
-            {
-                switch (KeyType)
-                {
-                    case InputKeyType.Once:
-                        isPressed = IsControlJustPressed(KeyGroup, KeyCode);
-                        break;
-                    case InputKeyType.Continuous:
-                        isPressed = IsControlPressed(KeyGroup, KeyCode);
-                        break;
-                }
-            }
+            bool isPressed = KeyMethod(KeyGroup, KeyCode);
 
             if (isPressed)
             {
@@ -118,10 +104,32 @@ namespace FYF.MapBuilder.Client
                 }
             }
 
-            return isPressed;
+            return false;
+        }
+
+        private void UpdateKeyMethod()
+        {
+            bool[] identity = new bool[] {
+                KeyType == InputKeyType.Continuous,
+                IsDisabled
+            };
+
+            var function = KeyPressFuncMap.FirstOrDefault(
+                (id) => id.Key[0] == identity[0] && id.Key[1] == identity[1]
+            ).Value;
+
+            if (function != null)
+            {
+                KeyMethod = function;
+                return;
+            }
+
+            Debug.WriteLine("Failed to fetch key method !?");
         }
     }
 
+    //@TODO(bma) #freecam stutter: Expose a method that let's you poll a key from our system without using a callback.
+    //                             This way we can avoid the freecam from stuttering due to it locking to the update rate of the input system.
     internal class Input
     {
         private readonly List<InputKeyState> keyStates = new List<InputKeyState>();
@@ -207,7 +215,7 @@ namespace FYF.MapBuilder.Client
                 }
             }
 
-            await BaseScript.Delay(0);
+            await BaseScript.Delay(10);
         }
 
         async Task UpdateMouse()

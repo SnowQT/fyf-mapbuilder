@@ -1,4 +1,5 @@
 ﻿using CitizenFX.Core;
+using System.Threading.Tasks;
 using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
@@ -15,7 +16,6 @@ namespace FYF.MapBuilder.Client
         public int KeySmoothTime;
     }
 
-    //@TODO: #freecam-tick-accessor: Freecam should use the RegisterTick from the IAccessor class.
     internal sealed class Freecam
     {
         public FreecamConfig Config { get; private set; }
@@ -29,6 +29,8 @@ namespace FYF.MapBuilder.Client
 
             Config = config;
 
+            //@TODO(bma) freecam-stutter: Don't use callbacks, this will lock camera to "Delay(0)" instead of Task.FromResult(0).Which causes notable lag.
+            //                            Alternatively, we can allow for callbacks, but accumulate the changes in rot/pos in FreecamCamera.
             var input = locator.GetServiceReference<Input>().Get();
             input.RegisterKey(0, 32, InputKeyType.Continuous, OnFreecamForward);
             input.RegisterKey(0, 33, InputKeyType.Continuous, OnFreecamBackwards);
@@ -39,23 +41,25 @@ namespace FYF.MapBuilder.Client
             input.RegisterMouse(OnFreecamMouseMove);
 
             camera = new FreecamCamera(this);
+
+            accessor.RegisterTick(Update);
         }
 
         public void EnableFreecam()
         {
             camera.Create();
-            FreezePlayerPed();
+            PlayerHelper.HidePlayer();
             Focus.Set(camera.Position, camera.Rotation);
         }
 
         public void DisableFreecam()
         {
             camera.Destroy();
-            UnfreezePlayerPed();
+            PlayerHelper.ShowPlayer();
             Focus.Clear();
         }
 
-        public void Update()
+        public async Task Update()
         {
             //Check if the camera is valid.
             if (camera.IsValid)
@@ -63,6 +67,8 @@ namespace FYF.MapBuilder.Client
                 camera.Update();
                 Focus.Set(camera.Position, camera.Rotation);
             }
+
+            await Task.FromResult(0);
         }
 
         public Camera GetNativeCamera()
@@ -114,37 +120,6 @@ namespace FYF.MapBuilder.Client
         private void OnFreecamMouseMove(Vector2 rotation)
         {
             camera.SetRelativeRotation(rotation);
-        }
-
-        //@TODO: This should be some util function, same for unfreeze player.
-        private void FreezePlayerPed()
-        {
-            int playerPedId = PlayerPedId();
-
-            Ped playerPed = new Ped(playerPedId);
-            playerPed.Position = playerPed.Position + Vector3.Up;
-
-            //Freeze the player ped entity.
-            SetEntityVisible(playerPedId, false, false);
-            SetEntityCollision(playerPedId, false, false);
-            FreezeEntityPosition(playerPedId, true);
-            SetPlayerInvincible(playerPedId, true);
-
-            //NOTE: Not sure if this works or is required at all.
-            NetworkSetEntityInvisibleToNetwork(playerPedId, true);
-        }
-
-        private void UnfreezePlayerPed()
-        {
-            int playerPedId = PlayerPedId();
-
-            //Unfreeze the player ped entity.
-            SetEntityVisible(playerPedId, true, false);
-            SetEntityCollision(playerPedId, true, false);
-            SetPlayerInvincible(playerPedId, false);
-            FreezeEntityPosition(playerPedId, false);
-
-            NetworkSetEntityInvisibleToNetwork(playerPedId, false);
         }
     }
 }

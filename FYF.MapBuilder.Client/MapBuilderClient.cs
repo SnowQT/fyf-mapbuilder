@@ -23,8 +23,8 @@ namespace FYF.MapBuilder.Client
             set { locator = value; }
         }
 
-        //@TODO #state-manager: Should this really be in the main function? Couldn't we subjugate this a specialized class that manages the states?
-        //@TODO #state-manager: Possible make use of a state manager that we can call from the service locator. So this doesn't need to be static.
+        //@TODO(bma) #state-manager: Should this really be in the main function? Couldn't we subjugate this a specialized class that manages the states?
+        //@TODO(bma) #state-manager: Possible make use of a state manager that we can call from the service locator. So this doesn't need to be static.
         public static bool IsUserInBuildMode = false;
 
         private Input input;
@@ -47,7 +47,7 @@ namespace FYF.MapBuilder.Client
             };
 
             input = locator.CreateService<Input>();
-            //@TODO: Move this to #move-toggle-to-class.
+            //@TODO(bma) #state-manager: Move this to #move-toggle-to-class.
             input.RegisterKey(0, 37, InputKeyType.Once);
             input.RegisterKey(0, 261, InputKeyType.Once);
             input.RegisterKey(0, 262, InputKeyType.Once);
@@ -56,20 +56,7 @@ namespace FYF.MapBuilder.Client
             ui = locator.CreateService<UserInterface>();
             builder = locator.CreateService<Builder>();
 
-            Tick += OnTick;
-
             EventHandlers.Add("onResourceStop", new Action<string>(OnResourceStopped));
-        }
-
-        private async Task OnTick()
-        {
-            if (IsUserInBuildMode)
-            {
-                //@TODO: This should use the RegisterTick from IAccessor.
-                freeCam.Update();
-            }
-
-            await Task.FromResult(0);
         }
 
         [Command("build")]
