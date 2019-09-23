@@ -4,7 +4,6 @@ export function ReceiveNuiMessage(messageType, callback) {
 
         //Exempt toggle messages.
         if (message.messageType === "toggleInit") {
-            HandleToggle(message);
             return;
         }
 
@@ -16,16 +15,27 @@ export function ReceiveNuiMessage(messageType, callback) {
     });
 }
 
-function HandleToggle(data) {
-    let key = parseInt(data.toggleKey);
-    let cbName = data.toggleName;
+export function ReceiveToggle(openCb, closeCb) {
+    window.addEventListener("message", (event) => {
+        const message = event.data;
 
-    window.onkeydown = function (e) {
-        var pressedKey = parseInt(e.keyCode ? e.keyCode : e.which);
-        if (key === pressedKey) {
-            SendNuiMessage("toggleInvoke_" + cbName, {});
+        if (message.messageType === "toggleInit") {
+            let key = parseInt(message.toggleKey);
+            let cbName = message.toggleName;
+
+            openCb();
+
+            window.onkeydown = function (e) {
+                var pressedKey = parseInt(e.keyCode ? e.keyCode : e.which);
+                if (key === pressedKey) {
+                    SendNuiMessage("toggleInvoke_" + cbName, {});
+                    closeCb();
+                }
+            }
+
+            return;
         }
-    }
+    });
 }
 
 export function SendNuiMessage(eventName, data) {

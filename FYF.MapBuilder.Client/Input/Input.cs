@@ -76,7 +76,10 @@ namespace FYF.MapBuilder.Client
 
         public bool Update()
         {
+            ProfilerEnterScope("InputKeyState_Update");
+
             bool isPressed = KeyMethod(KeyGroup, KeyCode);
+
 
             if (isPressed)
             {
@@ -103,6 +106,8 @@ namespace FYF.MapBuilder.Client
                     PressedState = false;
                 }
             }
+
+            ProfilerExitScope();
 
             return false;
         }
@@ -203,6 +208,8 @@ namespace FYF.MapBuilder.Client
 
         public async Task Update()
         {
+            ProfilerEnterScope("Input_Update");
+
             foreach (InputKeyState state in keyStates)
             {
                 //Update the key states
@@ -214,6 +221,8 @@ namespace FYF.MapBuilder.Client
                     DisableControlAction(state.KeyGroup, state.KeyCode, true);
                 }
             }
+
+            ProfilerExitScope();
 
             await BaseScript.Delay(10);
         }

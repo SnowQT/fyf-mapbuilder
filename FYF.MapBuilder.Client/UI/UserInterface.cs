@@ -33,13 +33,13 @@ namespace FYF.MapBuilder.Client
 
         public void Close()
         {
-            nui.SendMessage("close");
+            //nui.SendMessage("close");
             SetNuiFocus(false, false);
         }
 
         public void Open()
         {
-            nui.SendMessage("open");
+            //nui.SendMessage("open");
             SetNuiFocus(true, true);
         }
     }

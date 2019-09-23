@@ -1,4 +1,5 @@
 ﻿using CitizenFX.Core;
+using CitizenFX.Core.Native;
 using System.Threading.Tasks;
 using static CitizenFX.Core.Native.API;
 
@@ -61,12 +62,16 @@ namespace FYF.MapBuilder.Client
 
         public async Task Update()
         {
+            ProfilerEnterScope("FreecamUpdate");
+
             //Check if the camera is valid.
             if (camera.IsValid)
             {
                 camera.Update();
                 Focus.Set(camera.Position, camera.Rotation);
             }
+
+            ProfilerExitScope();
 
             await Task.FromResult(0);
         }

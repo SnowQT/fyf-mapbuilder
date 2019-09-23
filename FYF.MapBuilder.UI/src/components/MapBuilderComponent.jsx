@@ -1,6 +1,6 @@
 import * as React from "react";
 import ObjectBrowser from "./ObjectBrowser.jsx";
-import { ReceiveNuiMessage } from "../helper/NuiHelper.jsx";
+import { ReceiveToggle } from "../helper/NuiHelper.jsx";
 
 class MapBuilderComponent extends React.Component {
     constructor(props) {
@@ -9,13 +9,10 @@ class MapBuilderComponent extends React.Component {
     }
 
     componentDidMount() {
-        ReceiveNuiMessage("open", () => {
-            this.setState({ isOpened: true });
-        });
 
-        ReceiveNuiMessage("close", () => {
-            this.setState({ isOpened: false });
-        });
+        const open = () => this.setState({ isOpened: true });
+        const close = () => this.setState({ isOpened: false });
+        ReceiveToggle(open, close);
     }
 
     render() {
