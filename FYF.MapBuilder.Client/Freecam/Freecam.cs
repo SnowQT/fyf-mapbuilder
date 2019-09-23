@@ -1,5 +1,4 @@
 ﻿using CitizenFX.Core;
-using CitizenFX.Core.Native;
 using System.Threading.Tasks;
 using static CitizenFX.Core.Native.API;
 
@@ -20,7 +19,8 @@ namespace FYF.MapBuilder.Client
     internal sealed class Freecam
     {
         public FreecamConfig Config { get; private set; }
-        
+
+        private ServiceReference<Input> inputRef;
         private FreecamCamera camera;
 
         public Freecam(FreecamConfig config)
@@ -32,14 +32,16 @@ namespace FYF.MapBuilder.Client
 
             //@TODO(bma) freecam-stutter: Don't use callbacks, this will lock camera to "Delay(0)" instead of Task.FromResult(0).Which causes notable lag.
             //                            Alternatively, we can allow for callbacks, but accumulate the changes in rot/pos in FreecamCamera.
-            var input = locator.GetServiceReference<Input>().Get();
-            input.RegisterKey(0, 32, InputKeyType.Continuous, OnFreecamForward);
-            input.RegisterKey(0, 33, InputKeyType.Continuous, OnFreecamBackwards);
-            input.RegisterKey(0, 34, InputKeyType.Continuous, OnFreecamLeft);
-            input.RegisterKey(0, 35, InputKeyType.Continuous, OnFreecamRight);
-            input.RegisterKey(0, 52, InputKeyType.Continuous, OnFreecamDown);
-            input.RegisterKey(0, 54, InputKeyType.Continuous, OnFreecamUp);
-            input.RegisterMouse(OnFreecamMouseMove);
+            inputRef = locator.GetServiceReference<Input>();
+            var input = inputRef.Get();
+
+            input.RegisterKey(0, 32, InputKeyType.Continuous);
+            input.RegisterKey(0, 33, InputKeyType.Continuous);
+            input.RegisterKey(0, 34, InputKeyType.Continuous);
+            input.RegisterKey(0, 35, InputKeyType.Continuous);
+            input.RegisterKey(0, 52, InputKeyType.Continuous);
+            input.RegisterKey(0, 54, InputKeyType.Continuous);
+            //input.RegisterMouse(OnFreecamMouseMove);
 
             camera = new FreecamCamera(this);
 
@@ -67,6 +69,15 @@ namespace FYF.MapBuilder.Client
             //Check if the camera is valid.
             if (camera.IsValid)
             {
+                var input = inputRef.Get();
+                input.PollKey(0, 32, OnFreecamForward);
+                input.PollKey(0, 33, OnFreecamBackwards);
+                input.PollKey(0, 34, OnFreecamLeft);
+                input.PollKey(0, 35, OnFreecamRight);
+                input.PollKey(0, 52, OnFreecamDown);
+                input.PollKey(0, 54, OnFreecamUp);
+                input.PollMouse(OnFreecamMouseMove);
+
                 camera.Update();
                 Focus.Set(camera.Position, camera.Rotation);
             }

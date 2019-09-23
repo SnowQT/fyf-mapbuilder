@@ -31,7 +31,7 @@ namespace FYF.MapBuilder.Client
         public int KeyGroup;
         public int KeyCode;
         public InputKeyType KeyType;
-        public bool PressedState;
+        public bool WasPressedLastPoll;
         public int TimePressed;
         public HashSet<InputKeyCallback> Callbacks;
 
@@ -80,14 +80,13 @@ namespace FYF.MapBuilder.Client
 
             bool isPressed = KeyMethod(KeyGroup, KeyCode);
 
-
             if (isPressed)
             {
                 //Set the time the key was first pressed.
-                if (!PressedState)
+                if (!WasPressedLastPoll)
                 {
                     TimePressed = GetGameTimer();
-                    PressedState = true;
+                    WasPressedLastPoll = true;
                 }
 
                 //Invoke the key callbacks.
@@ -104,7 +103,7 @@ namespace FYF.MapBuilder.Client
                 if (TimePressed > 0)
                 {
                     TimePressed = -1;
-                    PressedState = false;
+                    WasPressedLastPoll = false;
                 }
             }
 
@@ -207,6 +206,27 @@ namespace FYF.MapBuilder.Client
             }
         }
 
+        public void PollKey(int keyGroup, int keyCode, InputKeyCallback callback)
+        {
+            if (FindKeyState(keyGroup, keyCode, out InputKeyState state))
+            {
+                if (state.WasPressedLastPoll)
+                {
+                    int t = GetGameTimer() - state.TimePressed;
+                    callback(t);
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"Cannot poll key [{keyGroup}, {keyCode}] because state doesn't exist. Forgot to call RegisterKey?");
+            }
+        }
+
+        public void PollMouse(InputMouseCallback callback)
+        {
+            callback(new Vector2(-GetControlNormal(0, 2), -GetControlNormal(0, 1)));
+        }
+
         public async Task Update()
         {
             ProfilerEnterScope("Input_Update");
@@ -243,6 +263,7 @@ namespace FYF.MapBuilder.Client
             if (Math.Abs(mx) < mouseEpsilon &&
                 Math.Abs(my) < mouseEpsilon)
             {
+                await Task.FromResult(0);
                 return;
             }
 
