@@ -58,15 +58,11 @@ namespace FYF.MapBuilder.Client
             //If the current state is closed, we want to open it and request a toggle to the NUI backend.
             if (!toggle.State)
             {
-                ProfilerEnterScope("HandleToggle_Open");
-
                 //Open the menu.
                 toggle.OpenFunction();
                 toggle.State = true;
 
-                ProfilerExitScope();
 
-                ProfilerEnterScope("HandleToggle_init");
                 //Setup a callback for NUI to call us back when the player want to close the UI.
                 string uniqueName = Guid.NewGuid().ToString("n");
                 var values = new Dictionary<string, string>
@@ -77,19 +73,12 @@ namespace FYF.MapBuilder.Client
 
                 SendMessage("toggleInit", values);
 
-                ProfilerExitScope();
-
-                ProfilerEnterScope("HandleToggle_Callback");
                 //Listen for when the user wants to close the UI.
                 AddCallback($"toggleInvoke_{uniqueName}", (dict) =>
                 {
-                    ProfilerEnterScope("HandleToggle_CallbackInner");
                     toggle.CloseFunction();
                     toggle.State = false;
-                    ProfilerExitScope();
                 });
-
-                ProfilerExitScope();
             }
         }
 

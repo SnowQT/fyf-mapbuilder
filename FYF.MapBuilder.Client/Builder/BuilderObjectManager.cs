@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using CitizenFX.Core;
+using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
@@ -21,21 +22,27 @@ namespace FYF.MapBuilder.Client
 
             camera = locator.GetServiceReference<Freecam>();
 
-            accessor.RegisterTick(OnTick);
+            accessor.RegisterTick(Update);
         }
 
-        public async Task OnTick()
+        public async Task Update()
         {
+            ProfilerEnterScope("BuilderObjectManager_Update");
+
             if (!isPropLoaded)
             {
                 await SetNewCurrentProp();
             }
+
+            ProfilerExitScope();
 
             await BaseScript.Delay(100);
         }
 
         private async Task SetNewCurrentProp()
         {
+            ProfilerEnterScope("BuilderObjectManager_Update_SetNewCurrentProp");
+
             //Unload and destroy the current prop and model.
             if (currentProp != null && currentProp.Exists())
             {
@@ -72,6 +79,8 @@ namespace FYF.MapBuilder.Client
 
             currentProp = prop;
             isPropLoaded = true;
+
+            ProfilerExitScope();
         }
 
         public void OnObjectChanged(string objectName)

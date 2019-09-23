@@ -25,21 +25,17 @@ namespace FYF.MapBuilder.Client
         //@TODO(bma) #broadcast: These callbacks should not be in the User Interface, would be nice if we could broadcast a message across the entire domain.
         void Browser_OnObjectChanged(dynamic args)
         {
-            string name = (string)args.name;
-
             Builder builder = builderRef.Get();
-            builder.BuilderObjectManager.OnObjectChanged(name);
+            builder.BuilderObjectManager.OnObjectChanged(args.name);
         }
 
         public void Close()
         {
-            //nui.SendMessage("close");
             SetNuiFocus(false, false);
         }
 
         public void Open()
         {
-            //nui.SendMessage("open");
             SetNuiFocus(true, true);
         }
     }

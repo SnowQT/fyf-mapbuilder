@@ -62,7 +62,7 @@ namespace FYF.MapBuilder.Client
 
         public async Task Update()
         {
-            ProfilerEnterScope("FreecamUpdate");
+            ProfilerEnterScope("Freecam_Update");
 
             //Check if the camera is valid.
             if (camera.IsValid)

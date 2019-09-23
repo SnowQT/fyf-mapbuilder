@@ -92,6 +92,7 @@ namespace FYF.MapBuilder.Client
 
                 //Invoke the key callbacks.
                 int time = MathUtil.Clamp(GetGameTimer() - TimePressed, 0, int.MaxValue);
+
                 foreach (InputKeyCallback callback in Callbacks)
                 {
                     callback.Invoke(time);
