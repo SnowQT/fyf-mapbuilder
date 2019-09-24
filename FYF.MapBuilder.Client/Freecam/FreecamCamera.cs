@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
 
@@ -52,7 +52,6 @@ namespace FYF.MapBuilder.Client
                 return cameraReference.Matrix;
             }
         }
-
 
         private Freecam self;
         private Camera cameraReference;

@@ -30,8 +30,6 @@ namespace FYF.MapBuilder.Client
 
             Config = config;
 
-            //@TODO(bma) freecam-stutter: Don't use callbacks, this will lock camera to "Delay(0)" instead of Task.FromResult(0).Which causes notable lag.
-            //                            Alternatively, we can allow for callbacks, but accumulate the changes in rot/pos in FreecamCamera.
             inputRef = locator.GetServiceReference<Input>();
             var input = inputRef.Get();
 
@@ -64,27 +62,29 @@ namespace FYF.MapBuilder.Client
 
         public async Task Update()
         {
-            ProfilerEnterScope("Freecam_Update");
 
             //Check if the camera is valid.
-            if (camera.IsValid)
+            if (!camera.IsValid)
             {
-                var input = inputRef.Get();
-                input.PollKey(0, 32, OnFreecamForward);
-                input.PollKey(0, 33, OnFreecamBackwards);
-                input.PollKey(0, 34, OnFreecamLeft);
-                input.PollKey(0, 35, OnFreecamRight);
-                input.PollKey(0, 52, OnFreecamDown);
-                input.PollKey(0, 54, OnFreecamUp);
-                input.PollMouse(OnFreecamMouseMove);
-
-                camera.Update();
-                Focus.Set(camera.Position, camera.Rotation);
+                await BaseScript.Delay(100);
+                return;
             }
 
-            ProfilerExitScope();
+            ProfilerEnterScope("Freecam_Update");
 
-            await Task.FromResult(0);
+            var input = inputRef.Get();
+            input.PollKey(0, 32, OnFreecamForward);
+            input.PollKey(0, 33, OnFreecamBackwards);
+            input.PollKey(0, 34, OnFreecamLeft);
+            input.PollKey(0, 35, OnFreecamRight);
+            input.PollKey(0, 52, OnFreecamDown);
+            input.PollKey(0, 54, OnFreecamUp);
+            input.PollMouse(OnFreecamMouseMove);
+
+            camera.Update();
+            Focus.Set(camera.Position, camera.Rotation);
+
+            ProfilerExitScope();
         }
 
         public Camera GetNativeCamera()

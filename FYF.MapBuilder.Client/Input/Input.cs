@@ -273,8 +273,6 @@ namespace FYF.MapBuilder.Client
             {
                 callback.Invoke(mousePosition);
             }
-
-            await Task.FromResult(0);
         }
 
         bool FindKeyState(int keyGroup, int keyCode, out InputKeyState outState)
