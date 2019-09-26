@@ -55,11 +55,11 @@ namespace FYF.MapBuilder.Client
         {
             Tick += new Func<Task>(() =>
             {
-                ProfilerEnterScope("ScheduledTick_" + method.Method.Name);
+                Profiler.Enter("ScheduledTick_" + method.Method.Name);
 
                 method.Invoke();
 
-                ProfilerExitScope();
+                Profiler.Exit();
 
                 return Delay(delayInMilliseconds);
             });
@@ -67,42 +67,42 @@ namespace FYF.MapBuilder.Client
 
         private async Task RenderTicks()
         {
-            ProfilerEnterScope("RenderTicks");
+            Profiler.Enter("RenderTicks");
 
             //@TODO(bma): Can we cache this .Select upon registering a new tick?
             var tasks = renderTicks.Select(async task =>
             {
-                ProfilerEnterScope("RenderTick_" + task.MethodName);
+                Profiler.Enter("RenderTick_" + task.MethodName);
 
                 await task.Method.Invoke();
 
-                ProfilerExitScope();
+                Profiler.Exit();
             });
 
             await Task.WhenAll(tasks);
 
-            ProfilerExitScope();
+            Profiler.Exit();
 
             await Task.FromResult(0);
         }
 
         private async Task UpdateTicks()
         {
-            ProfilerEnterScope("UpdateTicks");
+            Profiler.Enter("UpdateTicks");
 
             //@TODO(bma): Can we cache this .Select upon registering a new tick?
             var tasks = updateTicks.Select(async task =>
             {
-                ProfilerEnterScope("RenderTick_" + task.MethodName);
+                Profiler.Enter("RenderTick_" + task.MethodName);
 
                 await task.Method.Invoke();
 
-                ProfilerExitScope();
+                Profiler.Exit();
             });
 
             await Task.WhenAll(tasks);
 
-            ProfilerExitScope();
+            Profiler.Exit();
 
             await Delay(0);
         }

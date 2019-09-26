@@ -18,7 +18,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\server\data\resources\fyf-mapbuilder\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="CitizenFX.Core.Client, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CitizenFX.Core.Client.1.0.1622\lib\net45\CitizenFX.Core.Client.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -58,6 +59,7 @@
     <Compile Include="Util\Locator\ServiceLocator.cs" />
     <Compile Include="Util\NuiHelper.cs" />
     <Compile Include="Util\PlayerHelper.cs" />
+    <Compile Include="Util\Profiler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

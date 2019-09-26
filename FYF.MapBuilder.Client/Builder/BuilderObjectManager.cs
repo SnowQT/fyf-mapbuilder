@@ -60,7 +60,7 @@ namespace FYF.MapBuilder.Client
                 return;
             }
 
-            ProfilerEnterScope("BuildObjectManager_UpdateProp");
+            Profiler.Enter("BuildObjectManager_UpdateProp");
 
             Camera freecam = camera.Get()?.GetNativeCamera();
             Vector3 dimension = modelToLoad.GetDimensions();
@@ -84,12 +84,12 @@ namespace FYF.MapBuilder.Client
 
             DrawBox(min.X, min.Y, min.Z, max.X, max.Y, max.Z, 255, 0, 0, 100);
 
-            ProfilerExitScope();
+            Profiler.Exit();
         }
 
         private async Task SetNewCurrentProp()
         {
-            ProfilerEnterScope("BuilderObjectManager_Update_SetNewCurrentProp");
+            Profiler.Enter("BuilderObjectManager_Update_SetNewCurrentProp");
 
             //Unload and destroy the current prop and model.
             if (currentProp != null && currentProp.Exists())
@@ -109,7 +109,7 @@ namespace FYF.MapBuilder.Client
             currentProp = await World.CreateProp(modelToLoad, Vector3.Zero, Vector3.Zero, false, false);
             isPropLoaded = true;
 
-            ProfilerExitScope();
+            Profiler.Exit();
         }
 
         public void OnObjectChanged(string objectName)

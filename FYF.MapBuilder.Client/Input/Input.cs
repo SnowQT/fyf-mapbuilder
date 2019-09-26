@@ -76,7 +76,7 @@ namespace FYF.MapBuilder.Client
 
         public bool Update()
         {
-            ProfilerEnterScope("InputKeyState_Update");
+            Profiler.Enter("InputKeyState_Update");
 
             bool isPressed = KeyMethod(KeyGroup, KeyCode);
 
@@ -107,7 +107,7 @@ namespace FYF.MapBuilder.Client
                 }
             }
 
-            ProfilerExitScope();
+            Profiler.Exit();
 
             return false;
         }
@@ -226,21 +226,21 @@ namespace FYF.MapBuilder.Client
 
         private Task UpdateKeyStates()
         {
-            ProfilerEnterScope("Input_UpdateKeyStates");
+            Profiler.Enter("Input_UpdateKeyStates");
 
             foreach (InputKeyState state in keyStates)
             {
                 state.Update();
             }
 
-            ProfilerExitScope();
+            Profiler.Exit();
 
             return Task.FromResult(0);
         }
 
         private Task UpdateDisabledKeys()
         {
-            ProfilerEnterScope("Input_UpdateDisabledKeys");
+            Profiler.Enter("Input_UpdateDisabledKeys");
 
             foreach (InputKeyState state in keyStates)
             {
@@ -250,7 +250,7 @@ namespace FYF.MapBuilder.Client
                 }
             }
 
-            ProfilerExitScope();
+            Profiler.Exit();
 
             return Task.FromResult(0);
         }
