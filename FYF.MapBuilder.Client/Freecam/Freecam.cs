@@ -39,11 +39,11 @@ namespace FYF.MapBuilder.Client
             input.RegisterKey(0, 35, InputKeyType.Continuous);
             input.RegisterKey(0, 52, InputKeyType.Continuous);
             input.RegisterKey(0, 54, InputKeyType.Continuous);
-            //input.RegisterMouse(OnFreecamMouseMove);
 
             camera = new FreecamCamera(this);
 
-            accessor.RegisterTick(Update);
+            accessor.OnRenderTick(Freecam_Update);
+            accessor.OnRenderTick(Freecam_UpdateCamera);
         }
 
         public void EnableFreecam()
@@ -60,17 +60,14 @@ namespace FYF.MapBuilder.Client
             Focus.Clear();
         }
 
-        public async Task Update()
+        async Task Freecam_Update()
         {
-
             //Check if the camera is valid.
             if (!camera.IsValid)
             {
-                await BaseScript.Delay(100);
+                await Task.FromResult(0);
                 return;
             }
-
-            ProfilerEnterScope("Freecam_Update");
 
             var input = inputRef.Get();
             input.PollKey(0, 32, OnFreecamForward);
@@ -79,12 +76,21 @@ namespace FYF.MapBuilder.Client
             input.PollKey(0, 35, OnFreecamRight);
             input.PollKey(0, 52, OnFreecamDown);
             input.PollKey(0, 54, OnFreecamUp);
-            input.PollMouse(OnFreecamMouseMove);
+
+            OnFreecamMouseMove(input.PollMouse());
+        }
+
+        async Task Freecam_UpdateCamera()
+        {
+            //Check if the camera is valid.
+            if (!camera.IsValid)
+            {
+                await Task.FromResult(0);
+                return;
+            }
 
             camera.Update();
             Focus.Set(camera.Position, camera.Rotation);
-
-            ProfilerExitScope();
         }
 
         public Camera GetNativeCamera()
@@ -118,12 +124,14 @@ namespace FYF.MapBuilder.Client
 
         void OnFreecamUp(int time)
         {
+            //@TODO(bma) #freecam-wrong-axis: Should use the world up axis, not relative to the camera axis.
             Vector3 up = GetSmoothedKeyInput(time) * camera.Matrix.Forward;
             camera.SetRelativePosition(up);
         }
 
         void OnFreecamDown(int time)
         {
+            //@TODO(bma) #freecam-wrong-axis: Should use the world up axis, not relative to the camera axis.
             Vector3 down = GetSmoothedKeyInput(time) * camera.Matrix.Backward;
             camera.SetRelativePosition(down);
         }

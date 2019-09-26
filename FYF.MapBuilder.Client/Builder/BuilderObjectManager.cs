@@ -38,29 +38,25 @@ namespace FYF.MapBuilder.Client
 
             camera = locator.GetServiceReference<Freecam>();
 
-            accessor.RegisterTick(Update);
-            accessor.RegisterTick(UpdateProp);
+            accessor.OnUpdateTick(BuildObjectManager_UpdateTick);
+            accessor.OnRenderTick(BuildObjectManager_UpdateProp);
         }
 
-        public async Task Update()
+        public async Task BuildObjectManager_UpdateTick()
         {
-            ProfilerEnterScope("BuilderObjectManager_Update");
-
             if (NeedsToLoadProp)
             {
                 await SetNewCurrentProp();
+                return;
             }
-
-            ProfilerExitScope();
-
-            await BaseScript.Delay(0);
         }
 
-        private async Task UpdateProp()
+        private async Task BuildObjectManager_UpdateProp()
         {
+            //@TODO(bma): This is still jank, does not line up the object into the camera frustum, especially on larger objects.
             if (!HasPropSelected)
             {
-                await BaseScript.Delay(100);
+                await Task.FromResult(0);
                 return;
             }
 
@@ -70,7 +66,6 @@ namespace FYF.MapBuilder.Client
             Vector3 dimension = modelToLoad.GetDimensions();
             Vector3 camForwardDir = freecam.Matrix.Up;
 
-
             float objectMaxSize = Math.Max(Math.Max(dimension.X, dimension.Y), dimension.Z) / 2.0f; //No overload for 3 variables...? really?
             float cameraView = 2.0f * (float)Math.Tan(0.5f * (Math.PI * freecam.FieldOfView / 180.0f));
             float camerDistanceNoOffset = cameraView * objectMaxSize * 2.0f;
@@ -79,7 +74,15 @@ namespace FYF.MapBuilder.Client
             Vector3 propPos = freecam.Position + (cameraDistance * camForwardDir);
             currentProp.Position = propPos;
 
-            Debug.WriteLine(propPos.ToString());
+            Vector3 min = Vector3.Zero;
+            Vector3 max = Vector3.Zero;
+
+            GetModelDimensions((uint)modelToLoad.Hash, ref min, ref max);
+
+            min += propPos;
+            max += propPos;
+
+            DrawBox(min.X, min.Y, min.Z, max.X, max.Y, max.Z, 255, 0, 0, 100);
 
             ProfilerExitScope();
         }

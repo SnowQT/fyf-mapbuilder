@@ -107,6 +107,7 @@ namespace FYF.MapBuilder.Client
 
             //Apply the rotation of the camera.
             Vector3 cameraRotation = Rotation + rotationDeltaVector;
+
             float clampedX = MathUtil.Clamp(cameraRotation.X, -89.0f, 89.0f); //Avoid over-rotating.
             Vector3 newCameraRotation = new Vector3(clampedX, 0.0f, cameraRotation.Z);
 

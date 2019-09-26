@@ -52,6 +52,7 @@
     <Compile Include="MapBuilderClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UserInterface.cs" />
+    <Compile Include="Util\Accessor\BaseAccessor.cs" />
     <Compile Include="Util\Accessor\IAccessor.cs" />
     <Compile Include="Util\Focus.cs" />
     <Compile Include="Util\Locator\ServiceLocator.cs" />

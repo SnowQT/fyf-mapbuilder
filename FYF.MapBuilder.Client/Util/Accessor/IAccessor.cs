@@ -6,8 +6,9 @@ namespace FYF.MapBuilder.Client
     internal interface IAccessor
     {
         void RegisterEvent(string eventName, Delegate callback);
-        void RegisterTick(Func<Task> tick);
 
-        ServiceLocator GetLocator();
+        void OnRenderTick(Func<Task> tick);
+        void OnUpdateTick(Func<Task> tick);
+        void OnScheduledTick(Func<Task> tick, int delayInMilliseconds);
     }
 }

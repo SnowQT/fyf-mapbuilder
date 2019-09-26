@@ -138,14 +138,12 @@ namespace FYF.MapBuilder.Client
     internal class Input
     {
         private readonly List<InputKeyState> keyStates = new List<InputKeyState>();
-        private readonly HashSet<InputMouseCallback> mouseCallbacks = new HashSet<InputMouseCallback>();
+        private Vector2 mouseChangeVector = Vector2.Zero;
 
         public Input()
         {
             IAccessor accessor = MapBuilderClient.Accessor;
-            accessor.RegisterTick(Update);
-            accessor.RegisterTick(UpdateMouse);
-
+            accessor.OnUpdateTick(Update);
         }
 
         public InputKeyState RegisterKey(int keyGroup, int keyCode, InputKeyType type)
@@ -169,11 +167,6 @@ namespace FYF.MapBuilder.Client
             }
 
             return state;
-        }
-
-        public void RegisterMouse(InputMouseCallback callback)
-        {
-            mouseCallbacks.Add(callback);
         }
 
         public void DisableKey(int keyGroup, int keyCode)
@@ -208,6 +201,7 @@ namespace FYF.MapBuilder.Client
 
         public void PollKey(int keyGroup, int keyCode, InputKeyCallback callback)
         {
+            //@TODO(bma): Don't use a callback, waste of resources.
             if (FindKeyState(keyGroup, keyCode, out InputKeyState state))
             {
                 if (state.WasPressedLastPoll)
@@ -222,12 +216,14 @@ namespace FYF.MapBuilder.Client
             }
         }
 
-        public void PollMouse(InputMouseCallback callback)
+        public Vector2 PollMouse()
         {
-            callback(new Vector2(-GetControlNormal(0, 2), -GetControlNormal(0, 1)));
+            mouseChangeVector.X = -GetControlNormal(0, 2);
+            mouseChangeVector.Y = -GetControlNormal(0, 1);
+            return mouseChangeVector;
         }
 
-        public async Task Update()
+        private async Task Update()
         {
             ProfilerEnterScope("Input_Update");
 
@@ -245,34 +241,7 @@ namespace FYF.MapBuilder.Client
 
             ProfilerExitScope();
 
-            await BaseScript.Delay(10);
-        }
-
-        async Task UpdateMouse()
-        {
-            const float mouseEpsilon = 0.001f;
-
-            if (mouseCallbacks.Count == 0)
-            {
-                return;
-            }
-
-            float mx = -GetControlNormal(0, 2);
-            float my = -GetControlNormal(0, 1);
-
-            if (Math.Abs(mx) < mouseEpsilon &&
-                Math.Abs(my) < mouseEpsilon)
-            {
-                await Task.FromResult(0);
-                return;
-            }
-
-            Vector2 mousePosition = new Vector2(mx, my);
-
-            foreach (InputMouseCallback callback in mouseCallbacks)
-            {
-                callback.Invoke(mousePosition);
-            }
+            await Task.FromResult(0);
         }
 
         bool FindKeyState(int keyGroup, int keyCode, out InputKeyState outState)

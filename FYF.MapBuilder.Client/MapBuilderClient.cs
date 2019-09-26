@@ -5,7 +5,7 @@ using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
-    public class MapBuilderClient : BaseScript, IAccessor
+    public class MapBuilderClient : BaseAccessor
     {
         private static IAccessor _accessor;
         internal static IAccessor Accessor
@@ -32,7 +32,7 @@ namespace FYF.MapBuilder.Client
         private UserInterface ui;
         private Builder builder;
 
-        public MapBuilderClient()
+        public MapBuilderClient() : base()
         {
             _accessor = this;
 
@@ -41,7 +41,7 @@ namespace FYF.MapBuilder.Client
                 FieldOfView = 75,
                 PositionSensitivity = 1.0f,
                 PositionBase = 100.0f,
-                RotationSensitivity = 2.0f,
+                RotationSensitivity = 1.0f,
                 RotationBase = 500.0f,
                 KeySmoothTime = 500,
             };
@@ -106,25 +106,6 @@ namespace FYF.MapBuilder.Client
                 }
             }
         }
-
-        #region IAccessor
-
-        public void RegisterEvent(string eventName, Delegate callback)
-        {
-            EventHandlers.Add(eventName, callback);
-        }
-
-        public ServiceLocator GetLocator()
-        {
-            return locator;
-        }
-
-        public void RegisterTick(Func<Task> tick)
-        {
-            Tick += tick;
-        }
-
-        #endregion
     }
 }
  
