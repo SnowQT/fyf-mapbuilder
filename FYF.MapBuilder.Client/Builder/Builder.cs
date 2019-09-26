@@ -10,5 +10,10 @@ namespace FYF.MapBuilder.Client
         {
             BuilderObjectManager = new BuilderObjectManager();
         }
+
+        public void Cleanup()
+        {
+            BuilderObjectManager.Cleanup();
+        }
     }
 }

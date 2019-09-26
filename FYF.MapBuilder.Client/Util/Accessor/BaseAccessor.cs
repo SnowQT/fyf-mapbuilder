@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
+using System.Linq;
 
 namespace FYF.MapBuilder.Client
 {
@@ -32,7 +33,7 @@ namespace FYF.MapBuilder.Client
         {
             TickInfo info = new TickInfo()
             {
-                MethodName = method.GetType().Name,
+                MethodName = method.Method.Name,
                 Method = method
             };
 
@@ -43,7 +44,7 @@ namespace FYF.MapBuilder.Client
         {
             TickInfo info = new TickInfo()
             {
-                MethodName = method.GetType().Name,
+                MethodName = method.Method.Name,
                 Method = method
             };
 
@@ -52,11 +53,9 @@ namespace FYF.MapBuilder.Client
 
         public void OnScheduledTick(Func<Task> method, int delayInMilliseconds)
         {
-            string methodName = method.GetType().Name;
-
             Tick += new Func<Task>(() =>
             {
-                ProfilerEnterScope("ScheduledTick_" + methodName);
+                ProfilerEnterScope("ScheduledTick_" + method.Method.Name);
 
                 method.Invoke();
 
@@ -66,32 +65,44 @@ namespace FYF.MapBuilder.Client
             });
         }
 
-        async Task RenderTicks()
+        private async Task RenderTicks()
         {
-            //@TODO: #tick-parallel: Could we invoke these task using Parallel.Invoke?
-            foreach (var info in renderTicks)
-            {
-                ProfilerEnterScope("RenderTick_" + info.MethodName);
+            ProfilerEnterScope("RenderTicks");
 
-                await info.Method.Invoke();
+            //@TODO(bma): Can we cache this .Select upon registering a new tick?
+            var tasks = renderTicks.Select(async task =>
+            {
+                ProfilerEnterScope("RenderTick_" + task.MethodName);
+
+                await task.Method.Invoke();
 
                 ProfilerExitScope();
-            }
+            });
+
+            await Task.WhenAll(tasks);
+
+            ProfilerExitScope();
 
             await Task.FromResult(0);
         }
 
-        async Task UpdateTicks()
+        private async Task UpdateTicks()
         {
-            //@TODO: #tick-parallel: Could we invoke these task using Parallel.Invoke?
-            foreach (var info in updateTicks)
-            {
-                ProfilerEnterScope("UpdateTick_" + info.MethodName);
+            ProfilerEnterScope("UpdateTicks");
 
-                await info.Method.Invoke();
+            //@TODO(bma): Can we cache this .Select upon registering a new tick?
+            var tasks = updateTicks.Select(async task =>
+            {
+                ProfilerEnterScope("RenderTick_" + task.MethodName);
+
+                await task.Method.Invoke();
 
                 ProfilerExitScope();
-            }
+            });
+
+            await Task.WhenAll(tasks);
+
+            ProfilerExitScope();
 
             await Delay(0);
         }

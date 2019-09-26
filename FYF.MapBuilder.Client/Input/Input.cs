@@ -128,13 +128,9 @@ namespace FYF.MapBuilder.Client
                 KeyMethod = function;
                 return;
             }
-
-            Debug.WriteLine("Failed to fetch key method !?");
         }
     }
 
-    //@TODO(bma) #freecam stutter: Expose a method that let's you poll a key from our system without using a callback.
-    //                             This way we can avoid the freecam from stuttering due to it locking to the update rate of the input system.
     internal class Input
     {
         private readonly List<InputKeyState> keyStates = new List<InputKeyState>();
@@ -143,7 +139,9 @@ namespace FYF.MapBuilder.Client
         public Input()
         {
             IAccessor accessor = MapBuilderClient.Accessor;
-            accessor.OnUpdateTick(Update);
+            accessor.OnUpdateTick(UpdateDisabledKeys);
+            accessor.OnScheduledTick(UpdateKeyStates, 1000 / 15);
+            //accessor.OnUpdateTick(Update);
         }
 
         public InputKeyState RegisterKey(int keyGroup, int keyCode, InputKeyType type)
@@ -199,21 +197,24 @@ namespace FYF.MapBuilder.Client
             }
         }
 
-        public void PollKey(int keyGroup, int keyCode, InputKeyCallback callback)
+        public bool PollKey(int keyGroup, int keyCode, out int time)
         {
-            //@TODO(bma): Don't use a callback, waste of resources.
+            time = -1;
+
             if (FindKeyState(keyGroup, keyCode, out InputKeyState state))
             {
                 if (state.WasPressedLastPoll)
                 {
-                    int t = GetGameTimer() - state.TimePressed;
-                    callback(t);
+                    time = GetGameTimer() - state.TimePressed;
+                    return true;
                 }
             }
             else
             {
                 Debug.WriteLine($"Cannot poll key [{keyGroup}, {keyCode}] because state doesn't exist. Forgot to call RegisterKey?");
             }
+
+            return false;
         }
 
         public Vector2 PollMouse()
@@ -223,16 +224,26 @@ namespace FYF.MapBuilder.Client
             return mouseChangeVector;
         }
 
-        private async Task Update()
+        private Task UpdateKeyStates()
         {
-            ProfilerEnterScope("Input_Update");
+            ProfilerEnterScope("Input_UpdateKeyStates");
 
             foreach (InputKeyState state in keyStates)
             {
-                //Update the key states
                 state.Update();
+            }
 
-                //Update any keys that are disabled.
+            ProfilerExitScope();
+
+            return Task.FromResult(0);
+        }
+
+        private Task UpdateDisabledKeys()
+        {
+            ProfilerEnterScope("Input_UpdateDisabledKeys");
+
+            foreach (InputKeyState state in keyStates)
+            {
                 if (state.IsDisabled)
                 {
                     DisableControlAction(state.KeyGroup, state.KeyCode, true);
@@ -241,7 +252,7 @@ namespace FYF.MapBuilder.Client
 
             ProfilerExitScope();
 
-            await Task.FromResult(0);
+            return Task.FromResult(0);
         }
 
         bool FindKeyState(int keyGroup, int keyCode, out InputKeyState outState)

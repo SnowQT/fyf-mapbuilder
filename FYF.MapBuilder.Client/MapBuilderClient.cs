@@ -66,6 +66,7 @@ namespace FYF.MapBuilder.Client
             {
                 freeCam.DisableFreecam();
                 ui.Close();
+                builder.Cleanup();
 
                 input.EnableKey(0, 37);
                 input.EnableKey(0, 261);

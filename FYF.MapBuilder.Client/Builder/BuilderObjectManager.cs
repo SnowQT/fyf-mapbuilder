@@ -117,5 +117,12 @@ namespace FYF.MapBuilder.Client
             modelToLoad = new Model(objectName);
             isPropLoaded = false;
         }
+
+        public void Cleanup()
+        {
+            currentProp = null;
+            isPropLoaded = false;
+            modelToLoad = new Model();
+        }
     }
 }
