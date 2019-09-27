@@ -140,8 +140,7 @@ namespace FYF.MapBuilder.Client
         {
             IAccessor accessor = MapBuilderClient.Accessor;
             accessor.OnUpdateTick(UpdateDisabledKeys);
-            accessor.OnScheduledTick(UpdateKeyStates, 1000 / 15);
-            //accessor.OnUpdateTick(Update);
+            accessor.OnUpdateTick(UpdateKeyStates);
         }
 
         public InputKeyState RegisterKey(int keyGroup, int keyCode, InputKeyType type)

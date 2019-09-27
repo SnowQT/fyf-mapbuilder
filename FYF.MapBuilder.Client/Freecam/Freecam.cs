@@ -1,6 +1,5 @@
 ﻿using CitizenFX.Core;
 using System.Threading.Tasks;
-using static CitizenFX.Core.Native.API;
 
 namespace FYF.MapBuilder.Client
 {
@@ -149,15 +148,13 @@ namespace FYF.MapBuilder.Client
 
         private void OnFreecamUp(int time)
         {
-            //@TODO(bma) #freecam-wrong-axis: Should use the world up axis, not relative to the camera axis.
-            Vector3 up = GetSmoothedKeyInput(time) * camera.Matrix.Forward;
+            Vector3 up = GetSmoothedKeyInput(time) * Vector3.ForwardLH;
             camera.SetRelativePosition(up);
         }
 
         private void OnFreecamDown(int time)
         {
-            //@TODO(bma) #freecam-wrong-axis: Should use the world up axis, not relative to the camera axis.
-            Vector3 down = GetSmoothedKeyInput(time) * camera.Matrix.Backward;
+            Vector3 down = GetSmoothedKeyInput(time) * Vector3.ForwardRH;
             camera.SetRelativePosition(down);
         }
 

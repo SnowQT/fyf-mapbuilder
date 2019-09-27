@@ -17,7 +17,6 @@ namespace FYF.MapBuilder.Client
 
             builderRef = locator.GetServiceReference<Builder>();
 
-            //@TODO(bma): Investigate why the toggle is very unreliable! (only when opening it!)
             nui = new NuiHelper();
             nui.AddToggle(37, "9", Open, Close);
             nui.AddCallback("Browser_OnObjectChanged", Browser_OnObjectChanged);
