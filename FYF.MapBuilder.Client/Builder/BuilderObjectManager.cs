@@ -52,6 +52,7 @@ namespace FYF.MapBuilder.Client
             }
         }
 
+        //@TODO(bma): Some of the props have different anchor points, can we back this into the metadata some how?
         private async Task BuildObjectManager_UpdateProp()
         {
             if (!HasPropSelected)
@@ -62,9 +63,31 @@ namespace FYF.MapBuilder.Client
 
             Profiler.Enter("BuildObjectManager_UpdateProp");
 
-            Camera freecam = camera.Get()?.GetNativeCamera();
-            Vector3 camForwardDir = freecam.Matrix.Up;
+            Freecam freecam = camera.Get();
+            Camera freecamNative = freecam.GetNativeCamera();
 
+            RaycastResult result = freecam.GetLookat(currentProp);
+
+            if (result.DitHit)
+            {
+                PlaceCurrentPropOnGround(freecamNative, result.HitPosition);
+            }
+            else
+            {
+                PlaceCurrentPropInfrontOfCamera(freecamNative);
+            }
+
+            
+            Profiler.Exit();
+        }
+
+        private void PlaceCurrentPropOnGround(Camera camera, Vector3 hitPosition)
+        {
+            currentProp.Position = hitPosition;
+        }
+
+        private void PlaceCurrentPropInfrontOfCamera(Camera camera)
+        {
             Vector3 min = Vector3.Zero;
             Vector3 max = Vector3.Zero;
             GetModelDimensions((uint)modelToLoad.Hash, ref min, ref max);
@@ -72,8 +95,8 @@ namespace FYF.MapBuilder.Client
             BoundingVolume boundingVol = new BoundingVolume(min, max);
 
             const float minDist = 2.5f;
-            float nearClip = freecam.NearClip;
-            float farClip = freecam.FarClip;
+            float nearClip = camera.NearClip;
+            float farClip = camera.FarClip;
             float nearFarDistance = farClip - nearClip;
 
             float objectSize = boundingVol.GetRadius();
@@ -83,10 +106,8 @@ namespace FYF.MapBuilder.Client
             float propDistance = nearClip + (nearFarDistance * objectSizeFraction);
             propDistance = MathUtil.Clamp(propDistance, minDist, farClip);
 
-            Vector3 propPosition = freecam.Position + (propDistance * camForwardDir);
+            Vector3 propPosition = camera.Position + (propDistance * camera.Matrix.Up);
             currentProp.Position = propPosition;
-
-            Profiler.Exit();
         }
 
         private async Task SetNewCurrentProp()

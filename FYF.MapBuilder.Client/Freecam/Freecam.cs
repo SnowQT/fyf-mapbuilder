@@ -59,7 +59,21 @@ namespace FYF.MapBuilder.Client
             Focus.Clear();
         }
 
-        async Task Freecam_Update()
+        public Camera GetNativeCamera()
+        {
+            return camera.GetNativeCamera();
+        }
+
+        public RaycastResult GetLookat(Entity entityToIgnore = null)
+        {
+            float castingDistance = 100.0f;
+            Vector3 selfCoord = camera.Position;
+            Vector3 forward = camera.Matrix.Up;
+
+            return World.Raycast(selfCoord, selfCoord + forward * castingDistance, IntersectOptions.Map, entityToIgnore);
+        }
+
+        private async Task Freecam_Update()
         {
             //Check if the camera is valid.
             if (!camera.IsValid)
@@ -104,7 +118,7 @@ namespace FYF.MapBuilder.Client
             OnFreecamMouseMove(input.PollMouse());
         }
 
-        async Task Freecam_UpdateCamera()
+        private async Task Freecam_UpdateCamera()
         {
             //Check if the camera is valid.
             if (!camera.IsValid)
@@ -115,11 +129,6 @@ namespace FYF.MapBuilder.Client
 
             camera.Update();
             Focus.Set(camera.Position, camera.Rotation);
-        }
-
-        public Camera GetNativeCamera()
-        {
-            return camera.GetNativeCamera();
         }
 
         private void OnFreecamForward(int time)
@@ -167,5 +176,7 @@ namespace FYF.MapBuilder.Client
         {
             camera.SetRelativeRotation(rotation);
         }
+
+
     }
 }
