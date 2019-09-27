@@ -56,6 +56,9 @@
     <Compile Include="Util\Accessor\BaseAccessor.cs" />
     <Compile Include="Util\Accessor\IAccessor.cs" />
     <Compile Include="Util\Focus.cs" />
+    <Compile Include="Util\Game\AdvancedCamera.cs" />
+    <Compile Include="Util\Game\Geometry\BoundingVolume.cs" />
+    <Compile Include="Util\Game\Geometry\Plane2D.cs" />
     <Compile Include="Util\Locator\ServiceLocator.cs" />
     <Compile Include="Util\NuiHelper.cs" />
     <Compile Include="Util\PlayerHelper.cs" />

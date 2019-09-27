@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using CitizenFX.Core;
@@ -53,7 +54,6 @@ namespace FYF.MapBuilder.Client
 
         private async Task BuildObjectManager_UpdateProp()
         {
-            //@TODO(bma): This is still jank, does not line up the object into the camera frustum, especially on larger objects.
             if (!HasPropSelected)
             {
                 await Task.FromResult(0);
@@ -63,26 +63,28 @@ namespace FYF.MapBuilder.Client
             Profiler.Enter("BuildObjectManager_UpdateProp");
 
             Camera freecam = camera.Get()?.GetNativeCamera();
-            Vector3 dimension = modelToLoad.GetDimensions();
             Vector3 camForwardDir = freecam.Matrix.Up;
-
-            float objectMaxSize = Math.Max(Math.Max(dimension.X, dimension.Y), dimension.Z) / 2.0f; //No overload for 3 variables...? really?
-            float cameraView = 2.0f * (float)Math.Tan(0.5f * (Math.PI * freecam.FieldOfView / 180.0f));
-            float camerDistanceNoOffset = cameraView * objectMaxSize * 2.0f;
-            float cameraDistance = camerDistanceNoOffset + 0.5f * camerDistanceNoOffset;
-
-            Vector3 propPos = freecam.Position + (cameraDistance * camForwardDir);
-            currentProp.Position = propPos;
 
             Vector3 min = Vector3.Zero;
             Vector3 max = Vector3.Zero;
-
             GetModelDimensions((uint)modelToLoad.Hash, ref min, ref max);
 
-            min += propPos;
-            max += propPos;
+            BoundingVolume boundingVol = new BoundingVolume(min, max);
 
-            DrawBox(min.X, min.Y, min.Z, max.X, max.Y, max.Z, 255, 0, 0, 100);
+            const float minDist = 2.5f;
+            float nearClip = freecam.NearClip;
+            float farClip = freecam.FarClip;
+            float nearFarDistance = farClip - nearClip;
+
+            float objectSize = boundingVol.GetRadius();
+            float objectSizeFraction = (objectSize - nearClip) / (farClip - nearClip);
+            objectSizeFraction = MathUtil.Clamp(objectSizeFraction, 0.0f, 1.0f);
+
+            float propDistance = nearClip + (nearFarDistance * objectSizeFraction);
+            propDistance = MathUtil.Clamp(propDistance, minDist, farClip);
+
+            Vector3 propPosition = freecam.Position + (propDistance * camForwardDir);
+            currentProp.Position = propPosition;
 
             Profiler.Exit();
         }
