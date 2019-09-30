@@ -5,7 +5,7 @@ import { ReceiveToggle } from "../helper/NuiHelper.jsx";
 class MapBuilderComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { isOpened: false }
+        this.state = { isOpened: true }
     }
 
     componentDidMount() {

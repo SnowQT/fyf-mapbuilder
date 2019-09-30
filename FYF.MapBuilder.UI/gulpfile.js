@@ -34,6 +34,14 @@ gulp.task("deploy", (done) => {
 
 //Sets up a live environment for development.
 gulp.task("live", () => {
+
+    gulp.src(FilesToCopy)
+        .pipe(gulp.dest("./build"));
+
+    //Copy over the assets folder.
+    gulp.src(FoldersToCopy)
+        .pipe(gulp.dest("./build/assets/"));
+
     bs.init({
         server: {
             baseDir: "./build",
