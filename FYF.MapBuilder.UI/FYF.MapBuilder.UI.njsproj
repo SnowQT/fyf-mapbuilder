@@ -48,6 +48,9 @@
     <Content Include="package.json" />
     <Content Include="src\assets\css\global.css" />
     <Content Include="src\assets\css\objectlist.css" />
+    <Content Include="src\assets\css\objectlist_namespaces.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\assets\metadata\02gate3.json" />
     <Content Include="src\assets\metadata\ap1.json" />
     <Content Include="src\assets\metadata\beerrow.json" />
@@ -217,6 +220,7 @@
     <Content Include="src\assets\metadata\winerow.json" />
     <Content Include="src\assets\metadata\zprop.json" />
     <Content Include="src\assets\metadata\__entry.json" />
+    <Content Include="src\components\ObjectBrowserNamespaces.jsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />

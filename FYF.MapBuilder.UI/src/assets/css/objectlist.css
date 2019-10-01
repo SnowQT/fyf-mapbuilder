@@ -2,8 +2,7 @@
     width: 500px;
     background-color: white;
     height: 100vh;
-
-    border-right: 3px dashed dimgray;
+    border-right: 3px solid var(--accent_color);
 }
 
 .container_inner {

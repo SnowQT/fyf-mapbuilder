@@ -1,0 +1,22 @@
+.namespace_container {
+    overflow-y: scroll;
+    height: 20vh;
+    border: 1px solid lightgray;
+}
+
+.namespace_item {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.namespace_item_selected {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    user-select: none;
+
+    background-color: var(--accent_color);
+    border: 1px dashed darkgray;
+}

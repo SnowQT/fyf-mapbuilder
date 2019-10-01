@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
+:root {
+    --accent_color: rgb(255, 175, 0);
+}
+
 html {
     /*background-color: dimgrey;*/
     font-family: 'Roboto', sans-serif;

@@ -9,9 +9,9 @@ class MapBuilderComponent extends React.Component {
     }
 
     componentDidMount() {
-
         const open = () => this.setState({ isOpened: true });
         const close = () => this.setState({ isOpened: false });
+
         ReceiveToggle(open, close);
     }
 
