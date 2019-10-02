@@ -1,6 +1,6 @@
 .namespace_container {
     overflow-y: scroll;
-    height: 20vh;
+    height: 40vh;
     border: 1px solid lightgray;
 }
 

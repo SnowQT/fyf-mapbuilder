@@ -2,49 +2,300 @@
   {
     "name": "stt_prop_corner_sign",
     "variants": [ "01", "02", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" ],
-    "category": [],
-    "tags": [],
+	"align": "bottom",
+    "tags": [ "sign" ],
     "image": ""
   },
   {
     "name": "stt_prop_sign_circuit",
     "variants": [ "01", "02", "04", "05", "06", "07", "08", "09", "10", "11", "11b", "12", "13", "13b", "14", "14b" ],
-    "category": [],
-    "tags": [],
+	"align": "bottom",
+	"tags": [ "sign" ],
     "image": ""
   },
   {
     "name": "stt_prop_stunt_bowling",
     "variants": [ "ball", "pin" ],
-    "category": [],
-    "tags": [],
+	"align": "center",
+    "tags": [ "bowling", "ball", "pin "],
     "image": ""
   },
   {
     "name": "stt_prop_stunt_soccer",
     "variants": [ "ball", "lball", "sball" ],
-    "category": [],
-    "tags": [],
+	"align": "center",
+    "tags": [ "football", "ball" ],
     "image": ""
   },
   {
     "name": "stt_prop_stunt_tube",
-    "variants": [ "fn_01", "fn_02", "fn_03", "fn_04", "fn_05", "jmp2" ],
-    "category": [],
-    "tags": [],
+    "variants": [ "fn_01", "fn_02", "fn_03", "fn_04", "fn_05", "jmp2", "crn", "crn2", "crn_15d", "crn_30d", "crn_5d", "cross", "end", "ent", "fork", "gap_01", "gap_02", "gap_03", "hg", "jmp", "l", "m", "s", "speed", "speeda", "speedb", "xs", "xxs" ],
+	"align": "center",
+    "tags": [ "stunt", "tube" ],
     "image": ""
   },
   {
     "name": "stt_prop_track_stop_sign",
     "variants": [],
-    "category": [],
-    "tags": [],
+	"align": "bottom",
+    "tags": [ "sign", "moving", "stunt" ],
     "image": ""
   },
   {
     "name": "stt_prop_c4_stack",
     "variants": [],
-    "category": [],
+    "tags": [ "c4", "stack" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_hoop",
+    "variants": [ "constraction_01a", "small_01", "tyre_01a"],
+	"align": "bottom",
+    "tags": [ "hoop", "stunt"  ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_lives_bottle",
+    "variants": [],
+	"align": "bottom",
+    "tags": [ "bottle", "heart" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_race_gantry_01",
+    "variants": [],
+	"align": "bottom",
+    "tags": [ "sign", "billboard", "stunt" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_race_start_line",
+    "variants": [ "01", "01b", "02", "02b", "03", "03b" ],
+	"align": "bottom",
+    "tags": [ "track" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_race_tannoy",
+    "variants": [],
+	"align": "bottom",
+    "tags": [ "speaker", "light"],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_ramp_adj_flip",
+    "variants": [ "m", "mb", "s", "sb" ],
+	"align": "bottom",
+    "tags": [ "stunt"],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_ramp_adj_hloop",
+    "variants": [],
+	"align": "bottom",
+    "tags": [ "stunt", "looping" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_ramp_adj_loop",
+    "variants": [],
+	"align": "center",
+    "tags": [ "stunt", "looping" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_ramp_jump",
+    "variants": [ "l", "m", "s", "xl", "xs", "xxl" ],
+	"align": "bottom",
+    "tags": [ "stunt", "jump"],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_ramp_multi_loop_rb",
+    "variants": [],
+	"align": "bottom",
+    "tags": [ "stunt", "looping" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_ramp_spiral",
+    "variants": ["l", "l_l", "l_m", "l_s", "l_xxl", "m", "s", "xxl"],
+	"align": "bottom",
+    "tags": [ "stunt", "looping" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_slow_down",
+    "variants": [],
+	"align": "bottom",
+    "tags": [ "billboard", "sign" ],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_speakerstack_01a",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_startline_gantry",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_bblock",
+    "variants": [ "huge_01", "huge_02", "huge_03", "huge_04", "huge_05", "hump_01", "hump_02", "lrg1", "lrg2", "lrg3", "mdm1", "mdm2", "mdm3", "qp", "qp2", "qp3", "sml1", "sml2", "sml3", "xl1", "xl2", "xl3"],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_bowlpin_stand",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_domino",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_jump15",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_jump30",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_jump45",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_jump",
+    "variants": [ "l", "lb", "loop", "m", "mb", "s", "sb"],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_ramp",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_landing_zone_01",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_soccer_goal",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_target",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_target_small",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_track",
+    "variants": [ "bumps", "cutout", "dwlink", "dwlink_02", "dwsh15", "dwshort", "dwslope15", "dwslope30", "dwslope45", "dwturn", "dwuturn", "exshort", "fork", "funlng", "funnel", "hill", "hill2", "jump", "link", "otake", "sh15", "sh30", "sh45", "sh45_a", "short", "slope15", "slope30", "slope45", "start", "start_02", "straight", "straightice", "st_01", "st_02", "turn", "turnice", "uturn"],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_stunt_wideramp",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_bend2",
+    "variants": [ "bar_l", "bar_l_b", "l", "l_b"],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_bend",
+    "variants": [ "bend_15d", "bend_15d_bar", "bend_180d", "bend_180d_bar", "30d", "30d_bar", "5d", "5d_bar", "bar_l", "bar_l_b", "bar_m", "l", "l_b", "m"],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_block",
+    "variants": [ "01", "02", "03" ],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_chicane",
+    "variants": [ "l", "l_02", "r", "r_02" ],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_cross",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_cross_bar",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_fork",
+    "variants": [],
+	"align": "bottom",
+    "tags": [],
+    "image": ""
+  },
+  {
+    "name": "stt_prop_track_fork_bar",
+    "variants": [],
+	"align": "bottom",
     "tags": [],
     "image": ""
   }

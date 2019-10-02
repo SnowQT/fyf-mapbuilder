@@ -70,7 +70,7 @@ namespace FYF.MapBuilder.Client
 
             if (result.DitHit)
             {
-                PlaceCurrentPropOnGround(freecamNative, result.HitPosition);
+                PlaceCurrentPropOnGround(result.HitPosition);
             }
             else
             {
@@ -81,7 +81,7 @@ namespace FYF.MapBuilder.Client
             Profiler.Exit();
         }
 
-        private void PlaceCurrentPropOnGround(Camera camera, Vector3 hitPosition)
+        private void PlaceCurrentPropOnGround(Vector3 hitPosition)
         {
             currentProp.Position = hitPosition;
         }

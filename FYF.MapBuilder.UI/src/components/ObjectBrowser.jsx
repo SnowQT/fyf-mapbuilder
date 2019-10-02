@@ -44,20 +44,29 @@ class ObjectBrowser extends React.Component {
     }
 
     async updateRootSelection(root) {
-        const selectedRoot = await this.loadRootFile(root);
-        console.log(selectedRoot);
-        this.setState({ root: selectedRoot });
+        const loadedRoot = await this.loadRootFile(root);
+        this.setState({ selectedRoot: loadedRoot });
     }
 
     render() {
         const { roots, selectedRoot } = this.state;
-
         const updateRootSelectionCb = root => this.updateRootSelection(root);
+
+        let objectElements = null;
+
+        if (selectedRoot !== null) {
+            console.wr
+            objectElements = selectedRoot.objects.map(obj => {
+                return (
+                    <option key={obj}>{obj}</option>
+                );
+            }); 
+        }
 
         return (
             <div className={styles.container}>
                 <div className={styles.container_inner}>
-                    <h1 className={styles.title}>Object Browser</h1>
+                    <h2 className={styles.title}>Object Browser</h2>
 
                     <div>
                         <section className={styles.sub_title}>Search</section>
@@ -68,16 +77,14 @@ class ObjectBrowser extends React.Component {
                     <div>
                         <section className={styles.sub_title}>Namespaces</section>
                         <p className={styles.description}>Select the namespace you want to view the objects of. The list below will filter based on which namespace you selected.</p>
-                        <ObjectBrowserNamespaces onRootChanged={updateRootSelectionCb} roots={roots} root={selectedRoot} />
+                        <ObjectBrowserNamespaces onRootChanged={updateRootSelectionCb} onFilterObjects={roots} roots={roots} root={selectedRoot} />
                     </div>
 
                     <div>
                         <section className={styles.sub_title}>Objects</section>
                         <p className={styles.description}>Select the object you want to view in the editor, use the namespaces list above to filter the results.</p>
-                        <select
-                            name="variants"
-                            size="10" className={global.w100}
-                        >
+                        <select name="objects" size="10" className={global.w100} >
+                            { objectElements }
                         </select>
                     </div>
                 </div>

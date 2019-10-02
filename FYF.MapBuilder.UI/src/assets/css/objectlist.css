@@ -33,3 +33,7 @@
 .field {
    margin: 5px 0px;
 }
+
+.object_select {
+    width: 100%;
+}
